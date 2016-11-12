@@ -3,6 +3,26 @@ const test = require('./_test')
 
 describe('Colour', () => {
   const Colour = require('../src/Colour')
+
+  describe('init', () => {
+    it('from hex string', () => {
+      const colour = new Colour('#102030')
+      assert.equal( colour.red, 16 / 255 )
+    })
+
+    it('from colour name', () => {
+      const colour = new Colour('lime')
+      assert.equal( colour.toHexString(), '#00ff00' )
+    })
+
+    it('from rgba', () => {
+      const colour = new Colour( 1, 0, 1, 0.5 )
+      assert.equal( colour.alpha, 0.5 )
+
+      assert.equal( colour.toHexString(), '#ff00ff' )
+    })
+  })
+
   describe('clone', () => {
     it('will clone', () => {
       const colour = new Colour()

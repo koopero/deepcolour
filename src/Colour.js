@@ -1,8 +1,23 @@
 const NUM_CHANNELS = 4
 
+const COLOUR_NAMES = require('color-name')
+
 class Colour {
   constructor() {
     this.eachChannel( () => 0 )
+
+    //
+    // Load from arguments
+    //
+    var argChannel = 0
+    for ( var argI = 0; argI < arguments.length; argI++ ) {
+      var arg = arguments[argI]
+      if ( 'number' == typeof arg ) {
+        this.setChannel( argChannel++, arg )
+      } else if ( 'string' == typeof arg ) {
+        this.setString( arg )
+      }
+    }
   }
 
   clone() {
@@ -34,7 +49,11 @@ class Colour {
       valueToChannel( 'green', 'g', 1 )
       valueToChannel( 'blue',  'b', 2 )
       valueToChannel( 'alpha', 'a', 3 )
+    } else if ( 'string' == typeof value ) {
+      this.setString( value )
     }
+
+    return this
 
     function valueToChannel( key, alias, index ) {
       if ( key in value )
@@ -69,14 +88,7 @@ class Colour {
     return buffer
   }
 
-  set8BitArray( input ) {
-    if ( Array.isArray( input ) || Buffer.isBuffer( input ) ) {
-      this.eachChannel( ( value, c ) => input[c] / 255 )
-      return true
-    }
 
-    return false
-  }
 
   channel8Bit( channel ) {
     var value = this[channel]
@@ -166,6 +178,8 @@ class Colour {
     if ( !isNaN( r ) ) this[0] = r
     if ( !isNaN( g ) ) this[1] = g
     if ( !isNaN( b ) ) this[2] = b
+
+    return this
   }
 
   setHSV( hue, sat, val ) {
@@ -184,7 +198,7 @@ class Colour {
 
     if ( sat == 0 ) {
       this.setRGB( val, val, val )
-      return
+      return this
     }
 
     const hex = Math.floor( hue * 6 )
@@ -202,6 +216,61 @@ class Colour {
       case 5: this.setRGB( val, eP, eQ ); break
     }
 
+    return this
+  }
+
+  set8BitArray( input ) {
+    if ( Array.isArray( input ) || Buffer.isBuffer( input ) ) {
+      this.eachChannel( ( value, c ) => input[c] / 255 )
+      return this
+    }
+
+    return this
+  }
+
+  setChannel( channel, value ) {
+    channel = parseInt( channel ) || 0
+    if ( channel < 0 || channel > 3 )
+      throw new Error('Invalid channel')
+
+    value = parseFloat( value )
+    if ( !isNaN( value ) )
+      this[channel] = value
+
+    return this
+  }
+
+  setChannelHex( channel, value ) {
+    if ( 'string' != typeof value || !value.length || value.length > 2 )
+      throw new Error('Invalid input' )
+
+    if ( value.length < 2 )
+      value = value + value
+
+    value = parseInt( value, 16 )
+    value /= 255
+
+    return this.setChannel( channel, value )
+  }
+
+  setString( str ) {
+    const self = this
+    str = str.toLowerCase()
+
+    if ( str in COLOUR_NAMES )
+      return this.set8BitArray( COLOUR_NAMES[str] )
+
+    var match
+
+    if ( match = /#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/.exec( str ) ) {
+      this.setChannelHex( 0, match[1] )
+      this.setChannelHex( 1, match[2] )
+      this.setChannelHex( 2, match[3] )
+    } else if ( match = /#([0-9a-f])([0-9a-f])([0-9a-f])/.exec( str ) ) {
+      this.setChannelHex( 0, match[1] )
+      this.setChannelHex( 1, match[2] )
+      this.setChannelHex( 2, match[3] )
+    }
   }
 }
 
