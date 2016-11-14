@@ -1,3 +1,5 @@
+'use strict'
+
 const Canvas = require('./Canvas')
 
 const fs = require('fs')

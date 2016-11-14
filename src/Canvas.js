@@ -1,3 +1,5 @@
+'use strict'
+
 const Colour = require('./Colour')
     , boxOptions = require('./boxOptions')
     , composite = require('./composite')
@@ -130,7 +132,8 @@ class Canvas {
     if ( channels < 0 || channels > 4 )
       throw new RangeError('Invalid number of channels' )
 
-    const buffer = Buffer.alloc( box.w * box.h * channels )
+    const length = box.w * box.h * channels
+    const buffer = Buffer.alloc ? Buffer.alloc( length ) : new Buffer( length )
 
 
     this.eachPixel( box, function ( pixel, x, y, ind ) {

@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = boxOptions
 function boxOptions( canvas, opt ) {
   opt = opt || {}

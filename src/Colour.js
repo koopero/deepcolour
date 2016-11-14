@@ -1,3 +1,5 @@
+'use strict'
+
 const NUM_CHANNELS = 4
 
 const COLOUR_NAMES = require('color-name')
@@ -48,7 +50,7 @@ class Colour {
       valueToChannel( 'hue',   'h' )
       valueToChannel( 'saturation', 's' )
       valueToChannel( 'value',  'v' )
-      
+
       valueToChannel( 'red',   'r', 0 )
       valueToChannel( 'green', 'g', 1 )
       valueToChannel( 'blue',  'b', 2 )
@@ -85,7 +87,7 @@ class Colour {
     if ( length < 0 || length > 4 )
       throw new Exception( 'Invalid length' )
 
-    const buffer = Buffer.alloc( length )
+    const buffer = Buffer.alloc ? Buffer.alloc( length ) : new Buffer( length )
     for ( var c = 0; c < length; c++ )
       buffer[c] = this.channel8Bit( c )
 

@@ -1,3 +1,5 @@
+'use strict'
+
 const composite = exports
 
 composite.mix = function( other, amount ) {
