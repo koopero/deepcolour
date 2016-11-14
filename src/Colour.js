@@ -45,6 +45,10 @@ class Colour {
     if ( Colour.isColour( value ) || Array.isArray( value ) ) {
       this.eachChannel( ( v, c ) => value[c] )
     } else if ( 'object' == typeof value ) {
+      valueToChannel( 'hue',   'h' )
+      valueToChannel( 'saturation', 's' )
+      valueToChannel( 'value',  'v' )
+      
       valueToChannel( 'red',   'r', 0 )
       valueToChannel( 'green', 'g', 1 )
       valueToChannel( 'blue',  'b', 2 )
@@ -60,7 +64,7 @@ class Colour {
         self[key] = value[key]
       else if ( alias in value )
         self[key] = value[alias]
-      else if ( index in value )
+      else if ( ( 'undefined' != typeof index ) && ( index in value ) )
         self[key] = value[index]
     }
   }
@@ -170,6 +174,12 @@ class Colour {
     return hue
   }
 
+  setAlpha( alpha ) {
+    alpha = parseFloat( alpha )
+    if ( !isNaN( alpha ) ) this[3] = alpha
+    return this
+  }
+
   setRGB( r, g, b ) {
     r = parseFloat( r )
     g = parseFloat( g )
@@ -272,6 +282,26 @@ class Colour {
       this.setChannelHex( 2, match[3] )
     }
   }
+
+  toString() {
+    return this.toHexString()
+  }
+
+  inspect() {
+    return this.toString()
+  }
+
+  //
+  // Composite operators
+  //
+  mix( b, amount ) {
+    amount = parseAmount( amount )
+    b = parseColour( b )
+    this.eachChannel( ( value, channel ) =>
+      value * ( 1 - amount ) + b[channel] * amount
+    )
+  }
+
 }
 
 Colour.isColour = function ( object ) {
@@ -292,4 +322,19 @@ function valueToHex( v ) {
     v = '0'+v
 
   return v
+}
+
+function parseColour( colour ) {
+  if ( !(colour instanceof Colour ) )
+    throw new Error(`Ain't a Colour`)
+
+  return colour
+}
+
+function parseAmount( amount ) {
+  amount = parseFloat( amount )
+  if ( isNaN( amount ) )
+    return 1
+
+  return amount
 }

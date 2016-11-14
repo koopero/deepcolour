@@ -1,7 +1,7 @@
 const examples = require('./examples')
 examples.run( __filename, ( canvas ) => {
   const border = 16
-  canvas.set( 'lightseagreen' )
+  canvas.set( 'lightsalmon' )
 
   canvas.eachPixel( ( pix, x, y ) => {
     x /= canvas.width - 1

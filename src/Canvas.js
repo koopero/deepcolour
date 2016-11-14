@@ -1,5 +1,6 @@
 const Colour = require('./Colour')
     , boxOptions = require('./boxOptions')
+    , composite = require('./composite')
 
 const fs = require('fs-extra-promise')
     , PNG = require('pngjs').PNG
@@ -10,7 +11,13 @@ class Canvas {
     this.width = width
     this.height = height
     this.size = width * height
-    this.pixels = []
+
+    const pixels = []
+
+    Object.defineProperty( this, 'pixels', {
+      value: pixels
+    })
+
     this.background = new Colour()
     this.background.isBackground = true
     this.background.x = NaN
@@ -37,8 +44,16 @@ class Canvas {
     x = parseInt(x) || 0
     y = parseInt(y) || 0
 
-    if ( x >= this.width || x < 0 || y >= this.height || y < 0 )
+    if (
+      !this.width ||
+      !this.height ||
+      x >= this.width ||
+      x < 0 ||
+      y >= this.height ||
+      y < 0
+    ) {
       return this.background
+    }
 
     const ind = x + y * this.width
     return this.pixels[ind]
@@ -76,6 +91,32 @@ class Canvas {
     }
 
     return result
+  }
+
+  composite( src, operator, amount, destBox, srcBox ) {
+    const dest = this
+
+    if ( !Canvas.isCanvas( src ) )
+      throw new Error('src must be Canvas')
+
+    if ( !operator )
+      operator = 'over'
+
+    if ( 'string' == typeof operator ) {
+      if ( !( operator in composite ) )
+        throw new Error('Unknown composite operator')
+
+      operator = composite[operator]
+    }
+
+    destBox = boxOptions( dest, destBox )
+    srcBox = boxOptions( src, srcBox )
+
+    amount = parseAmount( amount )
+    dest.eachPixel( destBox, ( pix, x, y ) => {
+      const srcPix = src.pixel( x - destBox.x + srcBox.x, y - destBox.y + srcBox.y )
+      operator.call( pix, srcPix, amount )
+    })
   }
 
   toBuffer( box ) {
@@ -143,7 +184,30 @@ class Canvas {
     this.eachPixel( box, function ( pixel ) {
       pixel.set( value )
     } )
+
+    return this
+  }
+
+  setAlpha( value, box ) {
+    this.eachPixel( box, function ( pixel ) {
+      pixel.setAlpha( value )
+    } )
+
+    return this
   }
 }
 
+Canvas.isCanvas = function ( object ) {
+  return object instanceof Canvas
+}
+
+
 module.exports = Canvas
+
+function parseAmount( amount ) {
+  amount = parseFloat( amount )
+  if ( isNaN( amount ) )
+    return 1
+
+  return amount
+}

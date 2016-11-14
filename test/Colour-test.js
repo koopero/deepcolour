@@ -18,7 +18,6 @@ describe('Colour', () => {
     it('from rgba', () => {
       const colour = new Colour( 1, 0, 1, 0.5 )
       assert.equal( colour.alpha, 0.5 )
-
       assert.equal( colour.toHexString(), '#ff00ff' )
     })
   })
@@ -75,6 +74,17 @@ describe('Colour', () => {
       assert.equal( result[0], 0 )
       assert.equal( result[2], 255 )
 
+    })
+  })
+
+  describe('mix', () => {
+    it('will mix colours', () => {
+      const a = new Colour( 0, 0, 1, 1 )
+          , b = new Colour( 0, 1, 0, 1 )
+          , e = new Colour( 0, 0.5, 0.5, 1 )
+
+      a.mix( b, 0.5 )
+      assert.equal( a.toHexString(), e.toHexString() )
     })
   })
 

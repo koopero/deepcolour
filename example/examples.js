@@ -1,11 +1,17 @@
-const path = require('path')
+const _ = require('lodash')
+    , path = require('path')
     , glob = require('glob').sync
     , mapSeries = require('promise-map-series')
 
 const deepcolour = require('../index')
     , Canvas = deepcolour.Canvas
+    , Colour = deepcolour.Colour
+
 
 const examples = exports
+
+exports.Canvas = Canvas
+exports.Colour = Colour
 
 function now() {
   return new Date().getTime()
@@ -19,6 +25,7 @@ examples.newCanvas = function () {
 }
 
 examples.resolveOutput = path.resolve.bind( path, __dirname, 'output' )
+examples.resolveInput  = path.resolve.bind( path, __dirname, 'input' )
 
 examples.run = function ( filename, example ) {
   const name = path.parse( filename ).name
@@ -46,6 +53,22 @@ examples.run = function ( filename, example ) {
       console.log(`saved ${outputFile} in ${saveTime}ms`)
     })
   }
+}
+
+examples.inputs = function () {
+  const inputs = _.flatten( arguments )
+  const result = {}
+
+  console.log('inputs', inputs )
+
+  return mapSeries( inputs, ( input ) => {
+    const filename = examples.resolveInput( input )
+        , name = path.parse( input ).name
+
+    return deepcolour.load( filename )
+    .then( ( canvas ) => { result[name] = canvas } )
+  } )
+  .then( () => result )
 }
 
 examples.runAll = function () {

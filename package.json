@@ -1,6 +1,6 @@
 {
   "name": "deepcolour",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Simple colours and bitmap canvas for node.",
   "main": "index.js",
   "scripts": {
@@ -17,5 +17,27 @@
     "glob": "^7.1.1",
     "pngjs": "^3.0.0",
     "promise-map-series": "^0.2.3"
-  }
+  },
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koopero/deepcolour.git"
+  },
+  "keywords": [
+    "colour",
+    "color",
+    "bitmap",
+    "png",
+    "HSV",
+    "generative",
+    "art",
+    "graphics"
+  ],
+  "bugs": {
+    "url": "https://github.com/koopero/deepcolour/issues"
+  },
+  "homepage": "https://github.com/koopero/deepcolour#readme"
 }
