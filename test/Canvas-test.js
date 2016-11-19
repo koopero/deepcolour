@@ -15,6 +15,17 @@ describe('Canvas', () => {
     assert.instanceOf( pixel, Colour )
   })
 
+  describe('constructor', () => {
+    it('from object', () => {
+      const canvas = new Canvas( {
+        width: 43,
+        height: 42
+      } )
+
+      assert.equal( canvas.width, 43 )
+    })
+  })
+
   describe('clone', () => {
     it('will clone', () => {
       const canvas = new Canvas( 8, 1 )

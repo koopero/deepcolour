@@ -10,8 +10,25 @@ const fs = require('fs-extra-promise')
 
 class Canvas {
   constructor( width, height ) {
-    this.width = width
-    this.height = height
+    this.width = NaN
+    this.height = NaN
+
+    var dimI = 0
+    for ( var argI = 0; argI < arguments.length; argI ++ ) {
+      var arg = arguments[argI]
+
+      if ( 'number' == typeof arg ) {
+        switch( dimI++ ) {
+          case 0: this.width  = arg; break
+          case 1: this.height = arg; break
+        }
+      } else if ( 'object' == typeof arg && arg !== null ) {
+        this.width = parseFloat( arg.w ) || parseFloat( arg.width ) || this.width
+        this.height = parseFloat( arg.h ) || parseFloat( arg.height ) || this.height
+      }
+    }
+
+
     this.size = width * height
 
     const pixels = []
@@ -22,8 +39,6 @@ class Canvas {
 
     this.background = new Colour()
     this.background.isBackground = true
-    this.background.x = NaN
-    this.background.y = NaN
 
     var size = width * height
     for ( var i = 0; i < size; i ++ ) {
@@ -32,6 +47,7 @@ class Canvas {
     }
 
     Object.freeze( this.pixels )
+
   }
 
   clone() {
