@@ -1,6 +1,6 @@
 {
   "name": "deepcolour",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Simple colours and bitmap canvas for node.",
   "main": "index.js",
   "scripts": {
