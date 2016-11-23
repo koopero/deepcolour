@@ -9,7 +9,7 @@ const fs = require('fs-extra-promise')
     , PNGSync = PNG.sync
 
 class Canvas {
-  constructor( width, height ) {
+  constructor() {
     this.width = NaN
     this.height = NaN
 
@@ -19,17 +19,22 @@ class Canvas {
 
       if ( 'number' == typeof arg ) {
         switch( dimI++ ) {
-          case 0: this.width  = arg; break
-          case 1: this.height = arg; break
+          case 0: this.width  = parseInt( arg ); break
+          case 1: this.height = parseInt( arg ); break
         }
       } else if ( 'object' == typeof arg && arg !== null ) {
-        this.width = parseFloat( arg.w ) || parseFloat( arg.width ) || this.width
-        this.height = parseFloat( arg.h ) || parseFloat( arg.height ) || this.height
+        this.width = parseInt( arg.w ) || parseInt( arg.width ) || this.width
+        this.height = parseInt( arg.h ) || parseInt( arg.height ) || this.height
       }
     }
 
+    if ( isNaN( this.width ) )
+      this.width = 1
 
-    this.size = width * height
+    if ( isNaN( this.height ) )
+      this.height = 1
+
+    this.size = this.width * this.height
 
     const pixels = []
 
@@ -40,8 +45,7 @@ class Canvas {
     this.background = new Colour()
     this.background.isBackground = true
 
-    var size = width * height
-    for ( var i = 0; i < size; i ++ ) {
+    for ( var i = 0; i < this.size; i ++ ) {
       this.pixels[i] = new Colour()
       this.pixels[i].set( this.background )
     }
@@ -89,8 +93,8 @@ class Canvas {
 
     var index = 0
 
-    for ( var y = box.x; y < box.y + box.h; y++ )
-    for ( var x = box.y; x < box.x + box.w; x++ ) {
+    for ( var y = box.y; y < box.y + box.h; y++ )
+    for ( var x = box.x; x < box.x + box.w; x++ ) {
       var canvasIndex = this.width * y + x
         , pixel = this.pixels[canvasIndex]
         , callbackResult = undefined
@@ -139,7 +143,6 @@ class Canvas {
 
   toBuffer( box ) {
     box = boxOptions( this, box )
-
     var channels = parseInt( box.channels )
 
     if ( isNaN( channels ) )
