@@ -89,7 +89,7 @@ class Colour {
 
     const buffer = Buffer.alloc ? Buffer.alloc( length ) : new Buffer( length )
     for ( var c = 0; c < length; c++ )
-      buffer[c] = this.channel8Bit( c )
+      buffer.writeUInt8( this.channel8Bit( c ), c )
 
     return buffer
   }
@@ -99,9 +99,6 @@ class Colour {
   channel8Bit( channel ) {
     var value = this[channel]
     value = parseFloat( value )
-    if ( isNaN( value ) )
-      return value
-
     value = value < 0 ? 0 : value > 1 ? 1 : value
     value = Math.round( value * 255 )
     return value
