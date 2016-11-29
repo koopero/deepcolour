@@ -50,7 +50,7 @@ const canvas = new Canvas( 64, 32 )
 canvas.set( [0,0,1,1] )
 
 // Set the top left pixel to red
-canvas.pixel(0,0).hue = 0
+canvas.colour(0,0).hue = 0
 
 // Save the canvas as a PNG
 return canvas.savePNG( outputFile )
@@ -70,7 +70,7 @@ deepcolour.load( inputFile )
 
   // Set the top-left pixel to red
   canvas
-  .pixel( canvas.width - 1, canvas.height - 1 )
+  .colour( canvas.width - 1, canvas.height - 1 )
   .setHSV(0,1,1)
 
 })

@@ -1,4 +1,4 @@
-const examples = require('./examples')
+const examples = require('./index')
 examples.run( __filename, ( canvas ) => {
 
   return examples.inputs('grid.png')
@@ -10,4 +10,5 @@ examples.run( __filename, ( canvas ) => {
     grid.set('khaki')
     canvas.composite( grid )
   })
+  
 } )

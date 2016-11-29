@@ -1,4 +1,4 @@
-const examples = require('./examples')
+const examples = require('./index')
 examples.run( __filename, ( canvas ) => {
   const border = 16
   canvas.set( { alpha: 1 } )

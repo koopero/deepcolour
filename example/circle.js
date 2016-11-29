@@ -1,17 +1,13 @@
-const examples = require('./examples')
+const examples = require('./index')
 examples.run( __filename, ( canvas ) => {
   const border = 16
   canvas.set( 'lightsalmon' )
 
-  canvas.eachPixel( ( pix, x, y ) => {
-    x /= canvas.width - 1
-    y /= canvas.height - 1
-
-    x = x * 2 - 1
-    y = y * 2 - 1
+  canvas.eachPixel( ( pix ) => {
+    const x = pix.u * 2 - 1
+        , y = pix.v * 2 - 1
 
     if ( Math.sqrt( x * x + y * y ) <= 1 )
-      pix.alpha = 1
+      pix.colour.alpha = 1
   })
-
 } )

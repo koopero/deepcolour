@@ -23,7 +23,15 @@ var runningAll
   , runQueue = []
 
 examples.newCanvas = function () {
-  return new Canvas( 256, 256 )
+  var allocateTime = now()
+  const w = 48
+      , h = 24
+      , canvas = new Canvas( w, h )
+
+  allocateTime = now() - allocateTime
+  console.log(`allocated ${w}x${h} canvas in ${allocateTime}ms`)
+
+  return canvas
 }
 
 examples.resolveOutput = path.resolve.bind( path, __dirname, 'output' )
@@ -50,6 +58,7 @@ examples.run = function ( filename, example ) {
       saveTime = now()
       return canvas.savePNG( outputFile )
     })
+    .catch( ( e ) => console.error( e ) )
     .then( () => {
       saveTime = now() - saveTime
       console.log(`saved ${outputFile} in ${saveTime}ms`)

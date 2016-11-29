@@ -1,9 +1,9 @@
-const examples = require('./examples')
+const examples = require('./index')
 examples.run( __filename, ( canvas ) => {
-  canvas.eachPixel( function ( pixel, x, y ) {
-    pixel.alpha = 1
-    pixel.value = 1
-    pixel.hue = x / ( canvas.width - 1 )
-    pixel.saturation = y / ( canvas.height - 1 )
+  canvas.eachPixel( function ( pixel ) {
+    pixel.colour.alpha = 1
+    pixel.colour.value = 1
+    pixel.colour.hue = pixel.u
+    pixel.colour.saturation = pixel.v
   } )
 } )

@@ -4,15 +4,16 @@ const test = require('./_test')
 describe('Canvas', () => {
   const Canvas = require('../src/Canvas')
       , Colour = require('../src/Colour')
+      , Pixel = require('../src/Pixel')
 
   it('will not smoke', () => {
-    const trix = new Canvas( 64, 64 )
+    const canvas = new Canvas( 64, 64 )
 
-    assert.isArray( trix.pixels )
-    assert.isFunction( trix.pixel )
+    assert.isArray( canvas.pixels )
+    assert.isFunction( canvas.pixel )
 
-    const pixel = trix.pixel( 0, 0 )
-    assert.instanceOf( pixel, Colour )
+    const pixel = canvas.pixel( 0, 0 )
+    assert.instanceOf( pixel, Pixel )
   })
 
   describe('constructor', () => {
@@ -29,7 +30,7 @@ describe('Canvas', () => {
   describe('clone', () => {
     it('will clone', () => {
       const canvas = new Canvas( 8, 1 )
-      canvas.pixel(0,0).red = 1
+      canvas.colour(0,0).red = 1
 
       const clone = canvas.clone()
 
@@ -37,23 +38,75 @@ describe('Canvas', () => {
     })
   })
 
+  describe('pixel', () => {
+    it('will return background', () => {
+      const canvas = new Canvas( 3, 1 )
+          , background = canvas.backgroundPixel
+      assert.notEqual( canvas.pixel( 0,0 ), background )
+      assert.equal( canvas.pixel( 4,0 ), background )
+
+    } )
+  })
+
+  describe('box', () => {
+    it('no options', () => {
+      const canvas = new Canvas( 3, 3 )
+          , box = canvas.box()
+
+      assert.isArray( box )
+      assert.equal( box.length, 9 )
+
+      box.map( ( pixel ) => assert( Pixel.isPixel( pixel ) ) )
+      assert.equal( box[0].i, 0 )
+    } )
+
+    it('crop', () => {
+      const canvas = new Canvas( 4, 5 )
+          , box = canvas.box( { w: 3, h: 4 })
+
+      assert.equal( box.length, 12 )
+      box.map( ( pixel ) => assert( Pixel.isPixel( pixel ) ) )
+    } )
+
+    it('zig', () => {
+      const canvas = new Canvas( 3, 3 )
+          , box = canvas.box( { zig: 1 } )
+
+      assert.equal( box[2].x, 2 )
+      assert.equal( box[3].y, 1 )
+      assert.equal( box[3].x, 2 )
+    } )
+
+    it('zag', () => {
+      const canvas = new Canvas( 3, 3 )
+          , box = canvas.box( { zig: 2 } )
+
+      assert.equal( box[0].x, 2 )
+      assert.equal( box[3].y, 1 )
+      assert.equal( box[3].x, 0 )
+    } )
+
+  })
+
   describe('eachPixel', () => {
     it('will work', () => {
-      const trix = new Canvas( 8, 1 )
-      trix.pixel(0,0)[0] = 1
-      trix.pixel(0,0)[2] = 0.5
+      const canvas = new Canvas( 8, 1 )
+      canvas.colour(0,0)[0] = 1
+      canvas.colour(0,0)[2] = 0.5
+      var calls = 0
+      const result = canvas.eachPixel(  )
     })
 
     it('will crop', () => {
       const canvas = new Canvas( 12, 12 )
 
-      canvas.pixel(3,3).red = 1
+      canvas.colour(3,3).red = 1
 
       const pixels = canvas.eachPixel( { x: 3, y: 3, w: 4, h: 4 } )
       assert.isArray( pixels )
       assert.equal( pixels.length, 16 )
-      assert( Colour.isColour( pixels[0] ) )
-      assert.equal( pixels[0].red, 1 )
+      assert( Colour.isColour( pixels[0].colour ) )
+      assert.equal( pixels[0].colour.red, 1 )
     })
   })
 
@@ -61,7 +114,8 @@ describe('Canvas', () => {
     it('will crop', () => {
       const canvas = new Canvas( 12, 12 )
 
-      canvas.pixel(3,3).red = 1
+      canvas.pixel(3,3).colour.red = 1
+      canvas.colour(4,3).green = 1
 
       const result = canvas.toBuffer( { x: 3, y: 3, w: 4, h: 4 } )
       assert( Buffer.isBuffer( result ) )
@@ -72,7 +126,7 @@ describe('Canvas', () => {
 
     it('will output RGB only', () => {
       const canvas = new Canvas( 8, 1 )
-      canvas.pixel().red = 1
+      canvas.colour().red = 1
       const result = canvas.toBuffer( { channels: 3 } )
 
       assert( Buffer.isBuffer( result ) )
@@ -86,7 +140,7 @@ describe('Canvas', () => {
     it('will crop', () => {
       const canvas = new Canvas( 12, 12 )
 
-      canvas.pixel(3,3).red = 1
+      canvas.colour(3,3).red = 1
 
       const result = canvas.toPNGBuffer( { x: 3, y: 3, w: 4, h: 4 } )
       assert( Buffer.isBuffer( result ) )
@@ -95,26 +149,26 @@ describe('Canvas', () => {
 
   describe('loadPNG', () => {
     it('will work', () => {
-      const trix = new Canvas( 8, 1 )
+      const canvas = new Canvas( 8, 1 )
 
-      return trix.loadPNG( test.resolve('img/small.png') )
+      return canvas.loadPNG( test.resolve('img/small.png') )
       .then( () => {
         // Yellow pixel from small.png
-        assert.equal( trix.pixel(2).toHexString(), '#ffff00' )
+        assert.equal( canvas.colour(2).toHexString(), '#ffff00' )
       })
     })
   })
 
   describe('savePNG', () => {
     it('will work', () => {
-      const trix = new Canvas( 2, 2 )
-      trix.set({alpha:1})
-      trix.pixel(1,0).red = 1
-      trix.pixel(1,1).red = 1
-      trix.pixel(0,1).green = 1
-      trix.pixel(1,1).green = 1
+      const canvas = new Canvas( 2, 2 )
+      canvas.set({alpha:1})
+      canvas.colour(1,0).red = 1
+      canvas.colour(1,1).red = 1
+      canvas.colour(0,1).green = 1
+      canvas.colour(1,1).green = 1
 
-      return trix.savePNG( test.resolve('tmp/16pixels.png') )
+      return canvas.savePNG( test.resolve('tmp/16pixels.png') )
     })
   })
 
