@@ -5,8 +5,7 @@ const Colour = require('./Colour')
     , boxOptions = require('./boxOptions')
     , composite = require('./composite')
 
-const fs = require('fs-extra-promise')
-    , PNG = require('pngjs').PNG
+const PNG = require('pngjs').PNG
     , PNGSync = PNG.sync
 
 class Canvas {
@@ -45,7 +44,7 @@ class Canvas {
     h = isNaN( h ) ? 1 : h
 
     if ( w < 1 || h < 1 )
-      throw new Error( 'Invalid dimensions')
+      throw new Error( 'Invalid dimensions' )
 
     const pixels = []
 
@@ -222,33 +221,11 @@ class Canvas {
     return result
   }
 
-  loadPNG( src ) {
-    const self = this
-    var pushedPixels = 0
-    return new Promise( ( resolve, reject ) => {
-      fs.createReadStream( src )
-      .pipe( new PNG({
-        filterType: 4
-      }))
-      .on('error', reject )
-      .on('parsed', function () {
-        const png = this
-        self._loadPNGData( png )
-        resolve( pushedPixels )
-      })
-    })
-  }
-
   _loadPNGData( png ) {
     this.eachPixel( function ( pixel ) {
       const ind = (png.width * pixel.y + pixel.x ) << 2
       pixel.colour.set8BitArray( png.data.slice( ind, ind + 4 ) )
     })
-  }
-
-  savePNG( dest, options ) {
-    const data = this.toPNGBuffer( options )
-    return fs.outputFileAsync( dest, data )
   }
 
   set( value, box ) {

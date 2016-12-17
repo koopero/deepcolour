@@ -2,8 +2,9 @@ const test = require('./_test')
     , assert = test.assert
 
 describe('Canvas', () => {
-  const Canvas = require('../src/Canvas')
-      , Colour = require('../src/Colour')
+  const deepcolour = require('../index')
+      , Canvas = deepcolour.Canvas
+      , Colour = deepcolour.Colour
       , Pixel = require('../src/Pixel')
 
   it('will not smoke', () => {

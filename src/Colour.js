@@ -141,6 +141,9 @@ class Colour {
         , min = Math.min( this[0], this[1], this[2] )
         , delta = max - min
 
+    if ( delta <= 0 )
+      return this._saturation || 0
+
     return delta > 0 ? delta / max : 0
   }
 
@@ -173,6 +176,10 @@ class Colour {
     return hue
   }
 
+  //
+  // Chainable setStuff functions
+  //
+
   setAlpha( alpha ) {
     alpha = parseFloat( alpha )
     if ( !isNaN( alpha ) ) this[3] = alpha
@@ -203,6 +210,7 @@ class Colour {
     hue = hue % 1
     hue = hue < 0 ? hue + 1 : hue
     this._hue = hue
+    this._saturation = sat
 
 
     if ( sat == 0 ) {
@@ -283,6 +291,7 @@ class Colour {
   }
 
   toString() {
+    if ( this.alpha )
     return this.toHexString()
   }
 
