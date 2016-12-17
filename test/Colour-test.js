@@ -2,7 +2,7 @@ const test = require('./_test')
     , assert = test.assert
 
 describe('Colour', () => {
-  const Colour = require('../src/Colour')
+  const Colour = require('../index')
 
   describe('init', () => {
     it('from hex string', () => {
@@ -15,7 +15,7 @@ describe('Colour', () => {
       assert.equal( colour.toHexString(), '#00ff00' )
     })
 
-    it('from rgba', () => {
+    it('from RGBA arguments', () => {
       const colour = new Colour( 1, 0, 1, 0.5 )
       assert.equal( colour.alpha, 0.5 )
       assert.equal( colour.toHexString(), '#ff00ff' )
@@ -127,6 +127,22 @@ describe('Colour', () => {
       colour.hue += 0.5
 
       assert.equal( colour.toHexString(), '#8080ff' )
+    })
+  })
+
+  describe('get css', () => {
+    it('will return hex when possible', () => {
+      const colour = new Colour( Math.random(), Math.random(), Math.random() )
+          , css = colour.css
+
+      assert.match( css, /#[0-9A-F]{6}/i )
+    })
+
+    it('will return rgba() when alpha is not 1', () => {
+      const colour = new Colour('blue').setAlpha(0.5)
+          , css = colour.css
+
+      assert.equal( css, 'rgba(0,0,100%,50%)' )
     })
   })
 })

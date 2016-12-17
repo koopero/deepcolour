@@ -8,6 +8,9 @@ class Colour {
   constructor() {
     this.eachChannel( () => 0 )
 
+    // Default alpha to 1. Just easier.
+    this[3] = 1
+
     //
     // Load from arguments
     //
@@ -175,6 +178,15 @@ class Colour {
 
     return hue
   }
+
+  //
+  // String getters / setters
+  //
+
+  get css() {
+    return this.toHexString()
+  }
+
 
   //
   // Chainable setStuff functions
