@@ -37,32 +37,6 @@ describe('Colour', () => {
     })
   })
 
-  describe('set', () => {
-    it('from other colour', () => {
-      const a = new Colour()
-          , b = new Colour()
-
-      a.green = 0.5
-      b.set( a )
-
-      assert.equal( b.green, a.green )
-    })
-
-    it('from array of floats', () => {
-      const a = new Colour()
-      a.alpha = 0.5
-      a.set( [ 1,0,1 ] )
-      assert.equal( a.toHexString(), '#ff00ff' )
-      assert.equal( a.alpha, 0.5 )
-    })
-
-    it('from object with channel keys', () => {
-      const a = new Colour()
-      a.set( { alpha: 0.5 } )
-      assert.equal( a.alpha, 0.5 )
-    })
-  })
-
   describe('toBuffer', () => {
     it('will work', () => {
       const colour = new Colour()
@@ -142,7 +116,41 @@ describe('Colour', () => {
       const colour = new Colour('blue').setAlpha(0.5)
           , css = colour.css
 
-      assert.equal( css, 'rgba(0,0,100%,50%)' )
+      assert.equal( css, 'rgba(0,0,255,0.50)' )
+    })
+  })
+
+  describe('get hex', () => {
+    it('will regular hex', () => {
+      const colour = new Colour( Math.random(), Math.random(), Math.random() )
+          , hex = colour.hex
+
+      assert.match( hex, /#[0-9A-F]{6}/i )
+    })
+
+    it('will return clamped values when colour is out of range', () => {
+      const colour = new Colour(2,-1,0.5,3)
+          , hex = colour.hex
+
+      assert.equal( hex, '#ff0080' )
+    })
+  })
+
+  describe('.equal', () => {
+    it('will compare colours', () => {
+      const a = new Colour().setRandom()
+          , b = new Colour( a )
+
+      assert( Colour.equal( a, b ) )
+    })
+
+    it('will compare many args', () => {
+      const a = new Colour().setRandom()
+          , b = new Colour( a )
+          , c = new Colour()
+
+      assert( Colour.equal( a, b, a, b, a ) )
+      assert( !Colour.equal( a, b, a, b, a, c ) )
     })
   })
 })
