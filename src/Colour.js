@@ -160,14 +160,14 @@ class Colour {
   }
 
   get saturation () {
+    if ( this.isBlack() )
+      return this._saturation || 0
+
     const max = Math.max( this[0], this[1], this[2] )
         , min = Math.min( this[0], this[1], this[2] )
         , delta = max - min
 
-    if ( delta <= 0 )
-      return this._saturation || 0
-
-    return delta > 0 ? delta / max : 0
+    return max > 0 ? delta / max : 0
   }
 
   get hue() {
@@ -256,7 +256,7 @@ class Colour {
       return this
     }
 
-    if ( 'string' == typeof of )
+    if ( 'string' == typeof ob )
       return this.setString( ob )
 
     if ( global.Buffer && Buffer.isBuffer( ob ) )
@@ -293,8 +293,6 @@ class Colour {
       }
     }
   }
-
-
 
   setKeys( ob ) {
     const self = this
@@ -424,13 +422,12 @@ class Colour {
     if ( 'transparent' == str )
       return this.setAlpha( 0 )
 
-    const self = this
     str = str.toLowerCase()
 
     if ( str in COLOUR_NAMES )
       return this.set8BitArray( COLOUR_NAMES[str] )
 
-    var match
+    let match
 
     if ( match = /hsla?\(\s*(-?[\d\.]+%?)\s*,\s*(-?[\d\.]+%)\s*,\s*(-?[\d\.]+%)\s*(,\s*(-?[\d\.]+%?))?\s*\)/.exec( str ) ) {
       this.setHSL( match[1], match[2], match[3], match[5] )

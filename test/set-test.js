@@ -49,11 +49,37 @@ describe('Colour.set', () => {
     })
   })
 
+  describe('setAlpha', () => {
+    it('will set alpha', () => {
+      const colour = new Colour( 'lime' )
+      assert.equal( colour.alpha, 1 )
+      assert.equal( colour.setAlpha( 0.5 ), colour )
+      assert.equal( colour.alpha, 0.5 )
+    })
+  })
+
+
+  describe('setRandom', () => {
+    it('will work', () => {
+      const colour = new Colour( 'lime' )
+      assert.equal( colour.setRandom(), colour )
+      assert.notEqual( colour.hex, '#00ff00' )
+    })
+  })
+
+
   describe('setArguments', () => {
     it(`from [ 'css', alpha ]`, () => {
       const colour = new Colour()
       colour.setArguments( [ 'red', 0.5 ] )
       assert.equal( colour.red, 1 )
+      assert.equal( colour.alpha, 0.5 )
+    })
+
+    it(`from [ r,g,b,a ]`, () => {
+      const colour = new Colour()
+      colour.setArguments( [ 1,0,1, 0.5 ] )
+      assert.equal( colour.hex, '#ff00ff' )
       assert.equal( colour.alpha, 0.5 )
     })
   })
@@ -126,6 +152,7 @@ describe('Colour.set', () => {
     })
     it(`from 'transparent'`, () => {
       const colour = new Colour()
+      assert.equal( colour.alpha, 1 )
       colour.setString('transparent')
       assert.equal( colour.alpha, 0 )
     })

@@ -67,6 +67,17 @@ Set from an array of numbers in the range 0-255. Up to four values will be read,
 
 **setRGB** *( Number, Number, Number )* Sets red, green and blue values. If non-numeric values are passed, existing values are preserved.
 
+**setHSV** *( Number, Number, Number )* Sets hue, saturation and value values. If non-numeric values are passed, existing values are preserved.
+
+**setKeys** *( object )* Sets properties from an object. The following keys are supported: `['red','r','green','g','blue','b','alpha','a','hue','h','saturation','sat','s','value','v','hex','css']`
+
+**setAlpha** *( Number )* Set alpha value.
+
+**setRandom** *()* Set red, green and blue to random values in standard range.
+
+**setChannel** *( index, Number)* Set the channel `index` to a value.
+
+**setChannelHex** *( index, string )* Set the channel `index` to a hexadecimal value. The string may be 1 or 2 digits.
 
 
 ## Other Methods
@@ -80,3 +91,32 @@ Set from an array of numbers in the range 0-255. Up to four values will be read,
 In [HSV & HLS](https://en.wikipedia.org/wiki/HSL_and_HSV) colour spaces, hue and saturation can be invalid when the colour is grey or black. In purely functional colour conversions, this results in `saturation` being lost when `value == 0` and `hue` being lost when `saturation == 0`. This is particularly annoying in stateful system, where `value` or `saturation` are being modulated.
 
 `deepcolour` compensates for this by holding `hue` and `saturation` values.
+
+``` js
+// Initialize a new Colour
+let colour = new Colour('green')
+assert.equal( colour.hue, 1/3)
+
+// Set the colour to black
+colour.value = 0
+assert( colour.isBlack() )
+
+// Since it does not matter when value is 0,
+// hue is preserved.
+assert.equal( colour.hue, 1/3)
+
+// We can set the hue, as well.
+colour.hue = 1/6
+
+// Colour is still black
+assert( colour.isBlack() )
+
+// But the hue is preserved
+assert.equal( colour.hue, 1/6)
+
+// Set the colour back to full intensity
+colour.value = 1
+
+// Is now yellow
+assert.equal( colour.hex, '#ffff00' )
+```
