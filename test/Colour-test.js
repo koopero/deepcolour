@@ -1,5 +1,4 @@
-const test = require('./_test')
-    , assert = test.assert
+const assert = require('chai').assert
 
 describe('Colour', () => {
   const Colour = require('../index')
