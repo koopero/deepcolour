@@ -48,6 +48,22 @@ class Colour {
     ]
   }
 
+  toObject( keys ) {
+    if ( !keys )
+      keys = [ 'r','g','b','a' ]
+
+    if ( !Array.isArray( keys ) )
+      throw new Error('keys must be array')
+
+    const result = {}
+
+    keys.forEach( ( key ) => {
+      result[key] = this.channelByName( key )
+    })
+
+    return result
+  }
+
   toBuffer( length ) {
     length = parseInt( length )
     if ( isNaN( length ) )
@@ -76,6 +92,33 @@ class Colour {
       array[c] = this.channel8Bit( c )
 
     return array
+  }
+
+  channelByName( name ) {
+    switch ( name ) {
+      case '0': case 'r': case 'red':
+        return this.red
+
+      case '1': case 'g': case 'green':
+        return this.green
+
+      case '2': case 'b': case 'blue':
+        return this.blue
+
+      case '3': case 'a': case 'alpha':
+        return this.alpha
+
+      case 'h': case 'hue':
+        return this.hue
+
+      case 's': case 'sat': case 'saturation':
+        return this.saturation
+
+      case 'v': case 'value':
+        return this.value
+    }
+
+    return NaN
   }
 
   channel8Bit( channel ) {
