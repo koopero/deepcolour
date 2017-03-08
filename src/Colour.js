@@ -351,14 +351,15 @@ class Colour {
             ['css']
           ]
 
-    props.forEach( function( keys ) {
-      var prop
-      keys.forEach( function ( key ) {
-        prop = prop || key
-        if ( key in ob )
-          self[prop] = ob[key]
+    if ( 'object' == typeof ob )
+      props.forEach( function( keys ) {
+        var prop
+        keys.forEach( function ( key ) {
+          prop = prop || key
+          if ( key in ob )
+            self[prop] = ob[key]
+        } )
       } )
-    } )
 
     return this
   }
@@ -459,6 +460,43 @@ class Colour {
     value /= 255
 
     return this.setChannel( channel, value )
+  }
+
+  setChannelByName( name, value ) {
+    if ( 'string' !== typeof name )
+      throw new Error('channel name must be string')
+
+    switch ( name.toLowerCase() ) {
+      case 'r': case 'red':
+        this.red = value
+      break
+
+      case 'g': case 'green':
+        this.green = value
+      break
+
+      case 'b': case 'blue':
+        this.blue = value
+      break
+
+      case 'a': case 'alpha':
+        this.alpha = value
+      break
+
+      case 'h': case 'hue':
+        this.hue = value
+      break
+
+      case 's': case 'sat': case 'saturation':
+        this.saturation = value
+      break
+
+      case 'v': case 'value':
+        this.value = value
+      break
+    }
+
+    return this
   }
 
   setString( str ) {
