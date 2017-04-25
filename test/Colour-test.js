@@ -152,4 +152,19 @@ describe('Colour', () => {
       assert( !Colour.equal( a, b, a, b, a, c ) )
     })
   })
+
+  describe('.toHexChannels', () => {
+    it('will include alpha channel', () => {
+      const c = new Colour()
+      c.hex = '334455'
+      c.alpha = 0.5
+
+      assert.equal( c.toHexChannels('rgba'), '33445580' )
+    })
+
+    it('output hue', () => {
+      const c = new Colour('cyan')
+      assert.equal( c.toHexChannels('h'), '80' )
+    })
+  })
 })

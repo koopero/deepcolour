@@ -577,6 +577,27 @@ class Colour {
   }
 
   //
+  //
+  //
+
+  toHexChannels( channels ) {
+    let result = ''
+
+    channels = channels || 'rgb'
+    if ( 'string' != typeof channels )
+      throw new Error('channels must be string')
+
+    for ( let i = 0; i < channels.length; i ++ ) {
+      let value = this.channelByName( channels[i] )
+      value = value || 0
+      value = valueToHex( value )
+      result += value
+    }
+
+    return result
+  }
+
+  //
   // Composite operators
   //
   mix( b, amount ) {
