@@ -1,7 +1,6 @@
 'use strict'
 
 const NUM_CHANNELS = 4
-
 const COLOUR_NAMES = require('color-name')
 
 class Colour {
@@ -27,71 +26,6 @@ class Colour {
       if ( !isNaN( result ) )
         this[c] = result
     }
-  }
-
-
-
-  toHexString() {
-    var result = '#'
-    for ( var c = 0; c < 3; c ++ )
-      result += valueToHex( this[c] )
-
-    return result
-  }
-
-  toRGBA() {
-    return [
-      this[0],
-      this[1],
-      this[2],
-      this[3]
-    ]
-  }
-
-  toObject( keys ) {
-    if ( !keys )
-      keys = [ 'r','g','b','a' ]
-
-    if ( !Array.isArray( keys ) )
-      throw new Error('keys must be array')
-
-    const result = {}
-
-    keys.forEach( ( key ) => {
-      result[key] = this.channelByName( key )
-    })
-
-    return result
-  }
-
-  toBuffer( length ) {
-    length = parseInt( length )
-    if ( isNaN( length ) )
-      length = 4
-
-    if ( length < 0 || length > 4 )
-      throw new Exception( 'Invalid length' )
-
-    const buffer = Buffer.alloc ? Buffer.alloc( length ) : new Buffer( length )
-    for ( var c = 0; c < length; c++ )
-      buffer.writeUInt8( this.channel8Bit( c ), c )
-
-    return buffer
-  }
-
-  to8BitArray( length ) {
-    length = parseInt( length )
-    if ( isNaN( length ) )
-      length = 4
-
-    if ( length < 0 || length > 4 )
-      throw new Exception( 'Invalid length' )
-
-    const array = new Array( length )
-    for ( var c = 0; c < length; c++ )
-      array[c] = this.channel8Bit( c )
-
-    return array
   }
 
   channelByName( name ) {
@@ -127,6 +61,15 @@ class Colour {
     value = value < 0 ? 0 : value > 1 ? 1 : value
     value = Math.round( value * 255 )
     return value
+  }
+
+  isRGBNormal() {
+    return this[0] >= 0
+        && this[0] <= 1
+        && this[1] >= 0
+        && this[1] <= 1
+        && this[2] >= 0
+        && this[2] <= 1
   }
 
   isNormal() {
@@ -253,22 +196,7 @@ class Colour {
   //
 
   get css() {
-    // Return a regular hex string if the colour
-    // is in a normal range.
-    if ( this.isNormal() && this.alpha == 1 )
-      return this.toHexString()
-
-    let numbers = this.to8BitArray(3)
-      , tag = 'rgb'
-
-    if ( this.alpha != 1 ) {
-      numbers.push( valueToAlpha( this.alpha ) )
-      tag += 'a'
-    }
-
-    let inner = numbers.join( ',' )
-
-    return `${tag}(${inner})`
+    return this.toCSS()
   }
 
   set css( val ) {
@@ -282,7 +210,6 @@ class Colour {
   set hex( val ) {
     this.setString( val )
   }
-
 
   //
   // Chainable setStuff functions
@@ -322,7 +249,7 @@ class Colour {
     return this
   }
 
-  setArguments( args ) {
+  setArguments( args, fill = false ) {
     var argChannel = 0
     for ( var argI = 0; argI < args.length; argI++ ) {
       var arg = args[argI]
@@ -335,6 +262,13 @@ class Colour {
         this.set( arg )
       }
     }
+
+    while( fill && argChannel && argChannel < NUM_CHANNELS ) {
+      this.setChannel( argChannel, this[argChannel-1] )
+      argChannel ++
+    }
+
+    return this
   }
 
   setKeys( ob ) {
@@ -450,13 +384,19 @@ class Colour {
   }
 
   setChannelHex( channel, value ) {
-    if ( 'string' != typeof value || !value.length || value.length > 2 )
+    if ( 'string' == typeof value ) {
+      if ( !value.length || value.length > 2 )
+        throw new Error('Invalid hex value input' )
+
+      if ( value.length < 2 )
+        value = value + value
+  
+      value = parseInt( value, 16 )      
+    } 
+
+    if ( 'number' != typeof value ) 
       throw new Error('Invalid input' )
 
-    if ( value.length < 2 )
-      value = value + value
-
-    value = parseInt( value, 16 )
     value /= 255
 
     return this.setChannel( channel, value )
@@ -565,11 +505,11 @@ class Colour {
   }
 
   toString() {
-    return this.css
+    return this.toCSSUnclamped()
   }
 
   valueOf() {
-    return this.css
+    return this.toCSSUnclamped()
   }
 
   inspect() {
@@ -579,6 +519,69 @@ class Colour {
   //
   //
   //
+
+  toHexString() {
+    var result = '#'
+    for ( var c = 0; c < 3; c ++ )
+      result += valueToHex( this[c] )
+
+    return result
+  }
+
+  toRGBA() {
+    return [
+      this[0],
+      this[1],
+      this[2],
+      this[3]
+    ]
+  }
+
+  toObject( keys ) {
+    if ( !keys )
+      keys = [ 'r','g','b','a' ]
+
+    if ( !Array.isArray( keys ) )
+      throw new Error('keys must be array')
+
+    const result = {}
+
+    keys.forEach( ( key ) => {
+      result[key] = this.channelByName( key )
+    })
+
+    return result
+  }
+
+  toBuffer( length ) {
+    length = parseInt( length )
+    if ( isNaN( length ) )
+      length = 4
+
+    if ( length < 0 || length > 4 )
+      throw new Exception( 'Invalid length' )
+
+    const buffer = Buffer.alloc ? Buffer.alloc( length ) : new Buffer( length )
+    for ( var c = 0; c < length; c++ )
+      buffer.writeUInt8( this.channel8Bit( c ), c )
+
+    return buffer
+  }
+
+  to8BitArray( length ) {
+    length = parseInt( length )
+    if ( isNaN( length ) )
+      length = 4
+
+    if ( length < 0 || length > 4 )
+      throw new Exception( 'Invalid length' )
+
+    const array = new Array( length )
+    for ( var c = 0; c < length; c++ )
+      array[c] = this.channel8Bit( c )
+
+    return array
+  }
 
   toHexChannels( channels ) {
     let result = ''
@@ -597,6 +600,57 @@ class Colour {
     return result
   }
 
+  toCSS( format = 'auto' ) {
+    switch( format ) {
+      case 'rgba':
+        return this.toCSSRGBA()
+        
+      case 'hex':
+        return this.toHexString()
+
+      case 'unclamped':
+        return this.toCSSUnclamped()
+
+      default:
+      case 'auto':
+        let alpha = this.alpha
+        alpha = clampValue( alpha )
+        if ( this.isRGBNormal() && alpha == 1 ) 
+          return this.toHexString()
+
+        return this.toCSSRGBA()
+    }
+  }
+  toCSSRGBA() {
+    let numbers = this.to8BitArray(3)
+      , tag = 'rgb'
+      , alpha = this.alpha
+
+    alpha = clampValue( alpha )
+
+    if ( alpha != 1 ) {
+      numbers.push( valueToAlpha( alpha ) )
+      tag += 'a'
+    }
+
+    let inner = numbers.join( ',' )
+
+    return `${tag}(${inner})`
+  }
+
+  toCSSUnclamped() {
+    let numbers = this.toRGBA()
+    numbers = numbers.map( ( value, channel ) => 
+      channel < 3 ? 
+        Math.floor( value * 255 ).toString() :
+        valueToAlpha( value )
+    )
+    let inner = numbers.join( ',' )
+
+    return `rgba(${inner})`    
+  }
+
+
   //
   // Composite operators
   //
@@ -607,6 +661,22 @@ class Colour {
       value * ( 1 - amount ) + b[channel] * amount
     )
   }
+
+  add() {
+    let b = new Colour()
+    b.setArguments( arguments )
+    this.eachChannel( ( value, channel ) => value + b[channel] )
+    return this
+  }
+
+  multiply() {
+    let b = new Colour()
+    b.setArguments( arguments, true )
+    this.eachChannel( ( value, channel ) => value * b[channel] )
+    return this
+  }
+
+
 }
 
 Colour.isColour = function ( object ) {
@@ -632,6 +702,17 @@ module.exports = Colour
 //
 // Utility functions
 //
+
+function clampValue( a ) {
+  a = parseFloat( a ) || 0
+  if ( a > 1 )
+    return 1
+  
+  if ( a < 0 )
+    return 0
+
+  return a
+}
 
 function parseCSSHue( v ) {
   if ( 'number' == typeof v ) return v

@@ -79,6 +79,31 @@ Set from an array of numbers in the range 0-255. Up to four values will be read,
 
 **setChannelHex** *( index, string )* Set the channel `index` to a hexadecimal value. The string may be 1 or 2 digits.
 
+## Output Methods
+
+**toString** *()* Alias for **toCSSUnclamped**
+
+**toHexString** *()* `'#ff00ff'` CSS hex, clamped with no alpha. 
+
+**toRGBA** *()* `[1,0,1,1]` Raw values.
+
+**toObject** *()* `{ r: 1, g: 0, b: 1, a: 1}` Raw values.
+
+**toBuffer** *()* `Buffer.from([255,0,255,255])` Clamped, 8-bit values.
+
+**to8BitArrays** *( length )* `[255,0,255,255]` Clamped, 8-bit values.
+
+**toHexChannels** *( 'rgbahsv' )* `'ff00ffd4ffff'` Clamped, 8-bit values from RGB and HSV as hex.
+
+**toCSS** *( format = 'auto' | 'rgba' | 'hex' | 'unclamped' )* CSS in given strign format.
+
+**toCSSRGBA** *()* `'rgb(255,0,255)'` Clamped, 8-bit values with auto adding alpha.
+
+**toCSSUnclamped** *()* `'rgba(255,0,255,1)'` Clamped, 8-bit values with auto adding alpha.
+
+
+
+
 
 ## Other Methods
 

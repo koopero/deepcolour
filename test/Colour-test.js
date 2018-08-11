@@ -117,6 +117,20 @@ describe('Colour', () => {
 
       assert.equal( css, 'rgba(0,0,255,0.50)' )
     })
+
+    it('will clamp alpha values', () => {
+      // Since any system capable of using unclamped alpha values is probable
+      // not using CSS to parse colours, ensure that alpha values are always
+      // in range 0-1
+      
+      let a = new Colour('blue').setAlpha(10.0)
+      assert.equal( a.css, '#0000ff' )
+      assert.equal( a.toCSSUnclamped(), 'rgba(0,0,255,10.00)')
+
+      a.setAlpha(-1)
+      assert.equal( a.css, 'rgba(0,0,255,0.00)' )
+      assert.equal( a.toCSSUnclamped(), 'rgba(0,0,255,-1.00)')      
+    })
   })
 
   describe('get hex', () => {
@@ -150,6 +164,29 @@ describe('Colour', () => {
 
       assert( Colour.equal( a, b, a, b, a ) )
       assert( !Colour.equal( a, b, a, b, a, c ) )
+    })
+  })
+
+  describe('.setChannelHex', () => {
+    it('parses 2 digit hex', () => {
+      let c = new Colour()
+      c.setChannelHex(2,'80')
+
+      assert.equal( c.hex, '#000080')
+    })
+
+    it('parses 1 digit hex', () => {
+      let c = new Colour()
+      c.setChannelHex(2,'7')
+
+      assert.equal( c.hex, '#000077')
+    })
+
+    it('parses 8 bit number', () => {
+      let c = new Colour()
+      c.setChannelHex(2,8)
+
+      assert.equal( c.hex, '#000008')
     })
   })
 
