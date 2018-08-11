@@ -33,7 +33,7 @@ describe('Colour.set', () => {
   })
 
   it('from Buffer', () => {
-    const buffer = new Buffer('RGB')
+    const buffer = Buffer.from('RGB')
         , colour = new Colour().set8BitArray( buffer )
 
     assert.equal( colour.hex, '#524742' )
@@ -80,6 +80,12 @@ describe('Colour.set', () => {
       colour.setArguments( [ 1,0,1, 0.5 ] )
       assert.equal( colour.hex, '#ff00ff' )
       assert.equal( colour.alpha, 0.5 )
+    })
+
+    it('will fill when asked', () => {
+      const c = new Colour()
+      c.setArguments([0.5], true )
+      assert.equal( c.toHexChannels('rgba'), '80808080' )
     })
   })
 

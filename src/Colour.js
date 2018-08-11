@@ -561,7 +561,8 @@ class Colour {
     if ( length < 0 || length > 4 )
       throw new Exception( 'Invalid length' )
 
-    const buffer = Buffer.alloc ? Buffer.alloc( length ) : new Buffer( length )
+    const buffer = Buffer.alloc( length )
+
     for ( var c = 0; c < length; c++ )
       buffer.writeUInt8( this.channel8Bit( c ), c )
 
