@@ -1,3 +1,3 @@
 'use strict'
 
-module.exports = require('./src/Colour')
+module.exports = require('./src/HSV')

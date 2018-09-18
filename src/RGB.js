@@ -3,7 +3,21 @@
 const NUM_CHANNELS = 4
 const COLOUR_NAMES = require('color-name')
 
-class Colour {
+const CHANNEL_TO_INDEX = {
+  'r': 0,
+  'red': 0,
+  'g': 1,
+  'green': 1,
+  'b': 2,
+  'blue': 2,
+  'a': 3,
+  'alpha': 3, 
+}
+
+const util = require('./util')
+
+
+class Colour  {
   constructor() {
     this.setDefault()
     this.setArguments( arguments )
@@ -29,30 +43,12 @@ class Colour {
   }
 
   channelByName( name ) {
-    switch ( name ) {
-      case '0': case 'r': case 'red':
-        return this.red
+    let index = CHANNEL_TO_INDEX[ name ] 
 
-      case '1': case 'g': case 'green':
-        return this.green
+    if ( !index && index != 0 )
+      return NaN
 
-      case '2': case 'b': case 'blue':
-        return this.blue
-
-      case '3': case 'a': case 'alpha':
-        return this.alpha
-
-      case 'h': case 'hue':
-        return this.hue
-
-      case 's': case 'sat': case 'saturation':
-        return this.saturation
-
-      case 'v': case 'value':
-        return this.value
-    }
-
-    return NaN
+    return parseFloat( this[index] )
   }
 
   channel8Bit( channel ) {
@@ -98,22 +94,22 @@ class Colour {
   // RGB getters and setters
   //
   set red   ( value ) {
-    value = parseCSSValue( value )
+    value = util.parseCSSValue( value )
     if ( !isNaN( value ) )
       this[0] = value
   }
   set green ( value ) {
-    value = parseCSSValue( value )
+    value = util.parseCSSValue( value )
     if ( !isNaN( value ) )
       this[1] = value
   }
   set blue  ( value ) {
-    value = parseCSSValue( value )
+    value = util.parseCSSValue( value )
     if ( !isNaN( value ) )
       this[2] = value
   }
   set alpha ( value ) {
-    value = parseCSSAlpha( value )
+    value = util.parseCSSAlpha( value )
     if ( !isNaN( value ) )
       this[3] = value
   }
@@ -126,70 +122,7 @@ class Colour {
   //
   // HSV getters and setters
   //
-  set hue ( value ) {
-    value = parseCSSHue( value )
-    this.setHSV( value, this.saturation, this.value  )
-  }
-
-  set saturation ( value ) {
-    value = parseCSSValue( value )
-    this.setHSV( this.hue, value, this.value  )
-  }
-
-  set value ( value ) {
-    value = parseCSSValue( value )
-    this.setHSV( this.hue, this.saturation, value  )
-  }
-
-  get value () {
-    return Math.max( this[0], this[1], this[2] )
-  }
-
-  get saturation () {
-    if ( this.isBlack() )
-      return this._saturation || 0
-
-    const max = Math.max( this[0], this[1], this[2] )
-        , min = Math.min( this[0], this[1], this[2] )
-        , delta = max - min
-
-    return max > 0 ? delta / max : 0
-  }
-
-  get hue() {
-    const max = Math.max( this[0], this[1], this[2] )
-        , min = Math.min( this[0], this[1], this[2] )
-        , delta = max - min
-
-    if ( delta <= 0 )
-      return this._hue || 0
-
-    const red = this[0]
-        , green = this[1]
-        , blue = this[2]
-
-    var hue
-    if ( red == max )
-      hue = ( green - blue ) / delta
-    else if ( green == max )
-      hue = 2 + ( blue - red ) / delta
-    else
-      hue = 4 + ( red - green ) / delta
-
-    if ( hue < 0 )
-      hue += 6
-
-    hue /= 6
-
-    // Hack to allow hue >= 1 to be returned when
-    // set specifically by setHSV
-    if ( this._hue && ( this._hue % 1 ) == hue )
-      hue = this._hue
-
-    this._hue = hue
-
-    return hue
-  }
+ 
 
   //
   // String getters / setters
@@ -312,10 +245,10 @@ class Colour {
   setRGB( r, g, b, a ) {
     const args = arguments.length == 1 && arguments[0].length ? arguments[0] : arguments
 
-    r = parseCSSValue( args[0] )
-    g = parseCSSValue( args[1] )
-    b = parseCSSValue( args[2] )
-    a = parseCSSAlpha( args[3] )
+    r = util.parseCSSValue( args[0] )
+    g = util.parseCSSValue( args[1] )
+    b = util.parseCSSValue( args[2] )
+    a = util.parseCSSAlpha( args[3] )
 
     if ( !isNaN( r ) ) this[0] = r
     if ( !isNaN( g ) ) this[1] = g
@@ -474,10 +407,10 @@ class Colour {
 
   setHSL() {
     var args = arguments.length == 1 && arguments[0].length ? arguments[0] : arguments
-    const h = parseCSSHue( args[0] )
-        , s = parseCSSValue( args[1] )
-        , l = parseCSSValue( args[2] )
-        , alpha = parseCSSAlpha( args[3] )
+    const h = util.parseCSSHue( args[0] )
+        , s = util.parseCSSValue( args[1] )
+        , l = util.parseCSSValue( args[2] )
+        , alpha = util.parseCSSAlpha( args[3] )
 
 
     // Shamelessly ganked from http://stackoverflow.com/a/9493060
@@ -523,7 +456,7 @@ class Colour {
   toHexString() {
     var result = '#'
     for ( var c = 0; c < 3; c ++ )
-      result += valueToHex( this[c] )
+      result += util.valueToHex( this[c] )
 
     return result
   }
@@ -594,7 +527,7 @@ class Colour {
     for ( let i = 0; i < channels.length; i ++ ) {
       let value = this.channelByName( channels[i] )
       value = value || 0
-      value = valueToHex( value )
+      value = util.valueToHex( value )
       result += value
     }
 
@@ -615,7 +548,7 @@ class Colour {
       default:
       case 'auto':
         let alpha = this.alpha
-        alpha = clampValue( alpha )
+        alpha = util.clampValue( alpha )
         if ( this.isRGBNormal() && alpha == 1 ) 
           return this.toHexString()
 
@@ -627,10 +560,10 @@ class Colour {
       , tag = 'rgb'
       , alpha = this.alpha
 
-    alpha = clampValue( alpha )
+    alpha = util.clampValue( alpha )
 
     if ( alpha != 1 ) {
-      numbers.push( valueToAlpha( alpha ) )
+      numbers.push( util.valueToAlpha( alpha ) )
       tag += 'a'
     }
 
@@ -644,7 +577,7 @@ class Colour {
     numbers = numbers.map( ( value, channel ) => 
       channel < 3 ? 
         Math.floor( value * 255 ).toString() :
-        valueToAlpha( value )
+        util.valueToAlpha( value )
     )
     let inner = numbers.join( ',' )
 
@@ -656,8 +589,8 @@ class Colour {
   // Composite operators
   //
   mix( b, amount ) {
-    amount = parseAmount( amount )
-    b = parseColour( b )
+    amount = util.parseAmount( amount )
+    // b = util.parseColour( b )
     this.eachChannel( ( value, channel ) =>
       value * ( 1 - amount ) + b[channel] * amount
     )
@@ -700,83 +633,3 @@ Colour.equal = function() {
 
 module.exports = Colour
 
-//
-// Utility functions
-//
-
-function clampValue( a ) {
-  a = parseFloat( a ) || 0
-  if ( a > 1 )
-    return 1
-  
-  if ( a < 0 )
-    return 0
-
-  return a
-}
-
-function parseCSSHue( v ) {
-  if ( 'number' == typeof v ) return v
-  if ( !v )  return NaN
-
-  return parseFloat( v ) / 360
-}
-
-function parseCSSValue( v ) {
-  if ( 'number' == typeof v ) return v
-  if ( !v )  return NaN
-
-  var div = 255
-  if ( v.substr( v.length - 1 ) == '%' )
-    div = 100
-
-  return parseFloat( v ) / div
-}
-
-function parseCSSAlpha( v ) {
-  if ( 'number' == typeof v ) return v
-  if ( !v )  return NaN
-
-  var div = 1
-  if ( v.substr( v.length - 1 ) == '%' )
-    div = 100
-
-  return parseFloat( v ) / div
-}
-
-function valueToHex( v ) {
-  v = v < 0 ? 0 : v > 1 ? 1 : v
-  v = Math.round( v * 255 )
-  v = v.toString( 16 )
-  if ( v.length < 2 )
-    v = '0'+v
-
-  return v
-}
-
-function valueToPercent( v ) {
-  v *= 100
-  v = v.toFixed( 1 )
-  v += '%'
-
-  return v
-}
-
-function valueToAlpha( v ) {
-  return v.toFixed( 2 )
-}
-
-function parseColour( colour ) {
-  if ( !(colour instanceof Colour ) )
-    throw new Error(`Ain't a Colour`)
-
-  return colour
-}
-
-function parseAmount( amount ) {
-  amount = parseFloat( amount )
-  if ( isNaN( amount ) )
-    return 1
-
-  return amount
-}
