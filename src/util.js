@@ -41,6 +41,7 @@ util.parseCSSAlpha = function ( v ) {
 }
 
 util.valueToHex = function ( v ) {
+  v = parseFloat( v ) || 0
   v = v < 0 ? 0 : v > 1 ? 1 : v
   v = Math.round( v * 255 )
   v = v.toString( 16 )

@@ -3,7 +3,9 @@ const assert = require('chai').assert
 describe('Colour', () => {
   const Colour = require('../index')
 
+ 
   describe('init', () => {
+   
     it('from hex string', () => {
       const colour = new Colour('#102030')
       assert.equal( colour.red, 16 / 255 )
@@ -18,6 +20,13 @@ describe('Colour', () => {
       const colour = new Colour( 1, 0, 1, 0.5 )
       assert.equal( colour.alpha, 0.5 )
       assert.equal( colour.toHexString(), '#ff00ff' )
+    })
+  })
+
+  describe('object properties', () => {
+    it('will have length', () => {
+      const colour = new Colour('#102030')
+      assert.equal( colour.length, 4 )
     })
   })
 
