@@ -2,8 +2,7 @@ const assert = require('chai').assert
 
 describe('Colour', () => {
   const Colour = require('../index')
-
- 
+   
   describe('init', () => {
    
     it('from hex string', () => {
@@ -212,5 +211,22 @@ describe('Colour', () => {
       const c = new Colour('cyan')
       assert.equal( c.toHexChannels('h'), '80' )
     })
+  })
+
+  describe('.getChannel', () => {
+    it('will get by index', () => {
+      const value = 0.15
+      const index = 1
+      const c = new Colour( 0, value )
+      assert.equal( c.getChannel( index ), value )
+    })
+
+    it('will get by name', () => {
+      const value = 0.15
+      const name = 'green'
+      const c = new Colour( 0, value )
+      assert.equal( c.getChannel( name ), value )
+    })
+
   })
 })

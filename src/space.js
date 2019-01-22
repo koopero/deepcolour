@@ -2,7 +2,9 @@ function makeSpace( options ) {
   options = Object.assign( {
     rgba: 0,
     hsv: true,
-    css: true
+    css: true,
+    getters: true,
+    setters: true,
   }, options )
 
   options.rgba = parseInt( options.rgba )
@@ -45,6 +47,12 @@ function makeSpace( options ) {
     if ( false !== options.css )
       space = require('./CSS')( space, options ) 
   }
+
+  if ( options.getters ) {
+    space = require('./etters')( space, options )
+  }
+
+  space = require('./statics')( space, options )
 
   space.prototype.space = space
   space.prototype.length = options.length

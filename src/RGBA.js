@@ -72,26 +72,26 @@ function addMixin( _class, options ) {
     //
     // RGB getters and setters
     //
-    set red   ( value ) {
-      value = util.parseCSSValue( value )
-      if ( !isNaN( value ) )
-        this[0] = value
-    }
-    set green ( value ) {
-      value = util.parseCSSValue( value )
-      if ( !isNaN( value ) )
-        this[1] = value
-    }
-    set blue  ( value ) {
-      value = util.parseCSSValue( value )
-      if ( !isNaN( value ) )
-        this[2] = value
-    }
-    set alpha ( value ) {
-      value = util.parseCSSAlpha( value )
-      if ( !isNaN( value ) )
-        this[3] = value
-    }
+    // set red   ( value ) {
+    //   value = util.parseCSSValue( value )
+    //   if ( !isNaN( value ) )
+    //     this[0] = value
+    // }
+    // set green ( value ) {
+    //   value = util.parseCSSValue( value )
+    //   if ( !isNaN( value ) )
+    //     this[1] = value
+    // }
+    // set blue  ( value ) {
+    //   value = util.parseCSSValue( value )
+    //   if ( !isNaN( value ) )
+    //     this[2] = value
+    // }
+    // set alpha ( value ) {
+    //   value = util.parseCSSAlpha( value )
+    //   if ( !isNaN( value ) )
+    //     this[3] = value
+    // }
 
     get red   () { return this[0] }
     get green () { return this[1] }
@@ -127,46 +127,6 @@ function addMixin( _class, options ) {
       if ( !isNaN( g ) ) this[1] = g
       if ( !isNaN( b ) ) this[2] = b
       if ( !isNaN( a ) ) this[3] = a
-
-      return this
-    }
-
-
-
-
-    setChannelByName( name, value ) {
-      if ( 'string' !== typeof name )
-        throw new Error('channel name must be string')
-
-      switch ( name.toLowerCase() ) {
-        case 'r': case 'red':
-          this.red = value
-        break
-
-        case 'g': case 'green':
-          this.green = value
-        break
-
-        case 'b': case 'blue':
-          this.blue = value
-        break
-
-        case 'a': case 'alpha':
-          this.alpha = value
-        break
-
-        case 'h': case 'hue':
-          this.hue = value
-        break
-
-        case 's': case 'sat': case 'saturation':
-          this.saturation = value
-        break
-
-        case 'v': case 'value':
-          this.value = value
-        break
-      }
 
       return this
     }

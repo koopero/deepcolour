@@ -5,7 +5,7 @@ module.exports =
 function baseClass( options ) {
   const LENGTH = options.length
 
-  const keys = {}
+  const keys = Object.assign( {}, options.keys )
   options.channels.forEach( ( key, index ) => {
     keys[key] = index
   })
@@ -168,8 +168,6 @@ function baseClass( options ) {
       throw new Error(`Invalid channel ${channel}`)
     }
 
-
-
     toString() {
       return this.toCSSUnclamped()
     }
@@ -285,6 +283,13 @@ function baseClass( options ) {
       return this
     }
 
+    subtract() {
+      let b = new (this.space)()
+      b.setArguments( arguments )
+      this.eachChannel( ( value, channel ) => value - b[channel] )
+      return this
+    }
+
     multiply() {
       let b = new (this.space)()
       b.setArguments( arguments, true )
@@ -292,6 +297,26 @@ function baseClass( options ) {
       return this
     }
 
+    divide() {
+      let b = new (this.space)()
+      b.setArguments( arguments, true )
+      this.eachChannel( ( value, channel ) => value / b[channel] )
+      return this
+    }
+
+    min() {
+      let b = new (this.space)()
+      b.setArguments( arguments, true )
+      this.eachChannel( ( value, channel ) => Math.min( value, b[channel] ) )
+      return this
+    }
+
+    max() {
+      let b = new (this.space)()
+      b.setArguments( arguments, true )
+      this.eachChannel( ( value, channel ) => Math.max( value, b[channel] ) )
+      return this
+    }
 
   }
 

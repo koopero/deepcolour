@@ -34,9 +34,6 @@ describe('arbitrary colour spaces', () => {
     })
 
     it('will initialize from object', () => {
-      console.dir( space.options )
-
-
       const colour = new space({
         x: 42,
         v: 3
@@ -48,6 +45,56 @@ describe('arbitrary colour spaces', () => {
     it('will dump to hex', () => {
       const colour = new space( 0, 0, 0, 0, 0.5 )
       assert.equal( colour.toHexString( 6 ), '#000000008000' ) 
+    })
+
+    it('will add vectors', () => {
+      const a = new space( 1, 2, 3 )
+      const b = new space( 3, 2, 1 )
+      
+      a.add( b )
+      assert.equal( a[0], 4 )
+      assert.equal( a[1], 4 )
+      assert.equal( a[2], 4 )
+    })
+
+    it('will add vectors (static)', () => {
+      const a = [ 1, 2, 3 ]
+      const b = [ 3, 2, 1 ]
+      
+      let result = space.add( a, b )
+      assert.equal( result[0], 4 )
+      assert.equal( result[1], 4 )
+      assert.equal( result[2], 4 )
+    })
+  
+    it('will subtract vectors', () => {
+      const a = new space( 1, 2, 3 )
+      const b = new space( 3, 2, 1 )
+      
+      a.subtract( b )
+      assert.equal( a[0], -2 )
+      assert.equal( a[1], 0 )
+      assert.equal( a[2], 2 )
+    })
+
+    it('will divide vectors', () => {
+      const a = new space( 6, 4, 2 )
+      const b = new space( 3, 2, 1 )
+      
+      a.divide( b )
+      assert.equal( a[0], 2 )
+      assert.equal( a[1], 2 )
+      assert.equal( a[2], 2 )
+    })
+
+    it('will min vectors', () => {
+      const a = new space( 6, 4, 1 )
+      const b = new space( 3, 2, 2 )
+      
+      a.min( b )
+      assert.equal( a[0], 3 )
+      assert.equal( a[1], 2 )
+      assert.equal( a[2], 1 )
     })
   })
 
@@ -70,11 +117,11 @@ describe('arbitrary colour spaces', () => {
       assert.equal( colour.length, 6 )
     })
 
-    xit('will have getters for keys', () => {
+    it('will have getters for keys', () => {
       const colour = new space( 0, 0, 0, 0, 0.8 )
       assert.equal( colour.amber, 0.8 )
     })
-
-
   })
+
+
 })
