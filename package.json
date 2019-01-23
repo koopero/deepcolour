@@ -1,7 +1,7 @@
 {
   "name": "deepcolour",
   "version": "2.0.0",
-  "description": "Parsing, conversion and manipulation of RGBA colours and vectors",
+  "description": "Parsing, conversion and manipulation of RGBA, CSS and HSV colours, as well as vectors",
   "main": "index.js",
   "scripts": {
     "test": "nyc --reporter=text mocha",
