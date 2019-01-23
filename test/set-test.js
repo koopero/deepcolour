@@ -1,3 +1,5 @@
+/* eslint-env node, mocha */
+
 const assert = require('chai').assert
 
 describe('Colour.set', () => {
@@ -10,7 +12,7 @@ describe('Colour.set', () => {
 
   it('from other colour', () => {
     const a = new Colour()
-        , b = new Colour()
+      , b = new Colour()
 
     a.green = 0.5
     b.set( a )
@@ -34,7 +36,7 @@ describe('Colour.set', () => {
 
   it('from Buffer', () => {
     const buffer = Buffer.from('RGB')
-        , colour = new Colour().set8BitArray( buffer )
+      , colour = new Colour().set( buffer )
 
     assert.equal( colour.hex, '#524742' )
   })
@@ -45,6 +47,21 @@ describe('Colour.set', () => {
       assert( !colour.isBlack() )
       colour.setDefault()
       assert( colour.isBlack() )
+    })
+  })
+
+  describe('.setRGB', () => {
+    it('will set to black', () => {
+      const colour = new Colour( 'lime' )
+      assert( !colour.isBlack() )
+      colour.setRGB(0,0,0)
+      assert( colour.isBlack() )
+    })
+
+    it('array argument', () => {
+      const colour = new Colour()
+      colour.setRGB([1,0.5,0])
+      assert( colour.hex, '#ff8000' )
     })
   })
 
@@ -68,14 +85,14 @@ describe('Colour.set', () => {
 
 
   describe('setArguments', () => {
-    it(`from [ 'css', alpha ]`, () => {
+    it('from [ \'css\', alpha ]', () => {
       const colour = new Colour()
       colour.setArguments( [ 'red', 0.5 ] )
       assert.equal( colour.red, 1 )
       assert.equal( colour.alpha, 0.5 )
     })
 
-    it(`from [ r,g,b,a ]`, () => {
+    it('from [ r,g,b,a ]', () => {
       const colour = new Colour()
       colour.setArguments( [ 1,0,1, 0.5 ] )
       assert.equal( colour.hex, '#ff00ff' )
@@ -113,15 +130,15 @@ describe('Colour.set', () => {
   describe('set8BitArray', () => {
     it('will read from an array', () => {
       const array = [ 0xde, 0xad, 0xbe, 0xef ]
-          , colour = new Colour().set8BitArray( array  )
+        , colour = new Colour().set8BitArray( array  )
 
       assert.equal( colour.hex, '#deadbe' )
     })
 
     it('will be chainable', () => {
       const array = [ 0xde, 0xad, 0xbe, 0xef ]
-          , colour = new Colour()
-          , result = colour.set8BitArray( array  )
+        , colour = new Colour()
+        , result = colour.set8BitArray( array  )
 
       assert.equal( colour, result )
     })
@@ -136,30 +153,4 @@ describe('Colour.set', () => {
     })
   })
 
-  describe('setString', () => {
-    it('from hsla()', () => {
-      const colour = new Colour()
-      colour.setString('hsla(262, 54%, 31%,65%)')
-      assert.equal( colour.hex, '#44247a' )
-      assert.equal( colour.alpha, 0.65 )
-    })
-    it('from rgba()', () => {
-      const colour = new Colour()
-      colour.setString('rgba(255, 50%, 25%, 65%)')
-      assert.equal( colour.hex, '#ff8040' )
-      assert.equal( colour.alpha, 0.65 )
-    })
-    it('from rgb()', () => {
-      const colour = new Colour()
-      colour.setString('rgb(255, 50%, 25%)')
-      assert.equal( colour.hex, '#ff8040' )
-      // assert.equal( colour.alpha, 0.65 )
-    })
-    it(`from 'transparent'`, () => {
-      const colour = new Colour()
-      assert.equal( colour.alpha, 1 )
-      colour.setString('transparent')
-      assert.equal( colour.alpha, 0 )
-    })
-  })
 })

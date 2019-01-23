@@ -1,42 +1,23 @@
 {
   "name": "deepcolour",
-  "version": "1.4.1",
-  "description": "Simple colours and bitmap canvas for node.",
+  "version": "2.0.0",
+  "description": "Parsing, conversion and manipulation of RGBA, CSS and HSV colours, as well as vectors",
   "main": "index.js",
-  "babel": {
-    "plugins": [
-      "transform-es2015-arrow-functions",
-      "transform-es2015-classes",
-      "transform-es2015-object-super",
-      "transform-es2015-shorthand-properties",
-      "transform-es2015-template-literals",
-      "transform-es2015-block-scoping"
-    ]
-  },
-  "browserify": {
-    "transform": [
-      [
-        "babelify"
-      ]
-    ]
-  },
   "scripts": {
-    "test": "mocha"
+    "test": "nyc --reporter=text mocha",
+    "watch": "mocha -wb -R min",
+    "lint": "eslint test src"
   },
-  "author": "Samm Cooper <koopero@gmail.com>",
+  "author": "Samm Zuest Cooper <samm@hfour.ca>",
   "license": "MIT",
   "devDependencies": {
-    "babel-plugin-transform-es2015-arrow-functions": "^6.8.0",
-    "babel-plugin-transform-es2015-block-scoping": "^6.21.0",
-    "babel-plugin-transform-es2015-classes": "^6.18.0",
-    "babel-plugin-transform-es2015-object-super": "^6.8.0",
-    "babel-plugin-transform-es2015-shorthand-properties": "^6.18.0",
-    "babel-plugin-transform-es2015-template-literals": "^6.8.0",
-    "babelify": "^7.3.0",
-    "chai": "^3.5.0"
+    "chai": "^3.5.0",
+    "eslint": "^5.12.1",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0"
   },
   "dependencies": {
-    "color-name": "^1.1.1"
+    "color-name": "^1.1.4"
   },
   "directories": {
     "test": "test"
@@ -48,6 +29,7 @@
   "keywords": [
     "colour",
     "color",
+    "vector",
     "RGB",
     "HSV",
     "generative",

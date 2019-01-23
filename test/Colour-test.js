@@ -1,9 +1,12 @@
+/* eslint-env node, mocha */
+
 const assert = require('chai').assert
 
 describe('Colour', () => {
   const Colour = require('../index')
 
   describe('init', () => {
+   
     it('from hex string', () => {
       const colour = new Colour('#102030')
       assert.equal( colour.red, 16 / 255 )
@@ -18,6 +21,23 @@ describe('Colour', () => {
       const colour = new Colour( 1, 0, 1, 0.5 )
       assert.equal( colour.alpha, 0.5 )
       assert.equal( colour.toHexString(), '#ff00ff' )
+    })
+  })
+
+  describe('object properties', () => {
+    it('will have length', () => {
+      const colour = new Colour('#102030')
+      assert.equal( colour.length, 4 )
+    })
+
+    it('will have inspect', () => {
+      const colour = new Colour('#102030')
+      colour.inspect()
+    })
+
+    it('will have valueOf', () => {
+      const colour = new Colour('#102030')
+      colour.valueOf()
     })
   })
 
@@ -53,8 +73,8 @@ describe('Colour', () => {
   describe('mix', () => {
     it('will mix colours', () => {
       const a = new Colour( 0, 0, 1, 1 )
-          , b = new Colour( 0, 1, 0, 1 )
-          , e = new Colour( 0, 0.5, 0.5, 1 )
+        , b = new Colour( 0, 1, 0, 1 )
+        , e = new Colour( 0, 0.5, 0.5, 1 )
 
       a.mix( b, 0.5 )
       assert.equal( a.toHexString(), e.toHexString() )
@@ -106,14 +126,14 @@ describe('Colour', () => {
   describe('get css', () => {
     it('will return hex when possible', () => {
       const colour = new Colour( Math.random(), Math.random(), Math.random() )
-          , css = colour.css
+        , css = colour.css
 
       assert.match( css, /#[0-9A-F]{6}/i )
     })
 
     it('will return rgba() when alpha is not 1', () => {
       const colour = new Colour('blue').setAlpha(0.5)
-          , css = colour.css
+        , css = colour.css
 
       assert.equal( css, 'rgba(0,0,255,0.50)' )
     })
@@ -136,14 +156,14 @@ describe('Colour', () => {
   describe('get hex', () => {
     it('will regular hex', () => {
       const colour = new Colour( Math.random(), Math.random(), Math.random() )
-          , hex = colour.hex
+        , hex = colour.hex
 
       assert.match( hex, /#[0-9A-F]{6}/i )
     })
 
     it('will return clamped values when colour is out of range', () => {
       const colour = new Colour(2,-1,0.5,3)
-          , hex = colour.hex
+        , hex = colour.hex
 
       assert.equal( hex, '#ff0080' )
     })
@@ -152,15 +172,15 @@ describe('Colour', () => {
   describe('.equal', () => {
     it('will compare colours', () => {
       const a = new Colour().setRandom()
-          , b = new Colour( a )
+        , b = new Colour( a )
 
       assert( Colour.equal( a, b ) )
     })
 
     it('will compare many args', () => {
       const a = new Colour().setRandom()
-          , b = new Colour( a )
-          , c = new Colour()
+        , b = new Colour( a )
+        , c = new Colour()
 
       assert( Colour.equal( a, b, a, b, a ) )
       assert( !Colour.equal( a, b, a, b, a, c ) )
@@ -188,20 +208,178 @@ describe('Colour', () => {
 
       assert.equal( c.hex, '#000008')
     })
+
+    it('will throw on invalid value', () => {
+      let c = new Colour()
+      assert.throws( () => {
+        c.setChannelHex(2,null)
+      })
+
+      assert.throws( () => {
+        c.setChannelHex(2,'fff')
+      })
+    })
+
+    it('will throw on invalid channel', () => {
+      let c = new Colour()
+      assert.throws( () => {
+        c.setChannelHex('nochannel','88')
+      })
+    })
+  })
+
+  describe('.getChannel', () => {
+    it('will get by index', () => {
+      const value = 0.15
+      const index = 1
+      const c = new Colour( 0, value )
+      assert.equal( c.getChannel( index ), value )
+    })
+
+    it('will get by name', () => {
+      const value = 0.15
+      const name = 'green'
+      const c = new Colour( 0, value )
+      assert.equal( c.getChannel( name ), value )
+    })
+
+    it('will throw on invalid channel', () => {
+      const name = 'nope'
+      const c = new Colour()
+      assert.throws( () => {
+        c.getChannel( name )
+      })
+    })
+  })
+
+  describe('.isGrey', () => {
+    it('will detect grey colours', () => {
+      assert.equal( new Colour( 'white' ).isGrey(), true )
+    } )
+
+    it('will detect colours that are not grey', () => {
+      assert.equal( new Colour( 'red' ).isGrey(), false )
+    } )
+  })
+
+  describe('.isNormal', () => {
+    it('will detect normal colours', () => {
+      assert.equal( new Colour( 'white' ).isNormal(), true )
+    } )
+
+    it('will detect colours that are not normal', () => {
+      assert.equal( new Colour( 2,0,0,0 ).isNormal(), false )
+    } )
   })
 
   describe('.toHexChannels', () => {
-    it('will include alpha channel', () => {
+    it('will output requested channels', () => {
       const c = new Colour()
       c.hex = '334455'
       c.alpha = 0.5
 
-      assert.equal( c.toHexChannels('rgba'), '33445580' )
+      assert.equal( c.toHexChannels('grb'), '443355' )
     })
+
+    it('will default to all channels', () => {
+      const c = new Colour()
+      c.hex = '334455'
+      c.alpha = 0.5
+
+      assert.equal( c.toHexChannels(), '33445580' )
+    })
+
+    it('will use array channels', () => {
+      const c = new Colour()
+      c.hex = '334455'
+      c.alpha = 0.5
+
+      assert.equal( c.toHexChannels(['red','alpha']), '3380' )
+    })
+
 
     it('output hue', () => {
       const c = new Colour('cyan')
       assert.equal( c.toHexChannels('h'), '80' )
+    })
+
+    it('will throw on invalid channels', () => {
+      const colour = new Colour()
+      assert.throws( () => {
+        colour.toHexChannels( null )
+      })
+    })
+
+  })
+
+  describe('.toBuffer', () => {
+    it('will return expected result', () => {
+      const colour = new Colour( 0.5, 0.25, 0.125 )
+      let result = colour.toBuffer()
+      assert( Buffer.isBuffer( result ) )
+      let arr = [...result]
+      assert.deepEqual( arr, [ 128, 64, 32, 255 ] )
+    })
+    
+    it('will throw on invalid length', () => {
+      const colour = new Colour()
+      assert.throws( () => {
+        colour.toBuffer( 8 )
+      })
+    })
+  })
+
+  describe('.toObject', () => {
+
+    it('will return expected result', () => {
+      const colour = new Colour( 0.5, 0.25, 0.125 )
+      let result = colour.toObject()
+      assert.deepEqual( result, { r: 0.5, g: 0.25, b: 0.125, a: 1 } )
+    })
+
+    it('will return partial keys', () => {
+      const colour = new Colour( 0.5, 0.25, 0.125 )
+      let result = colour.toObject('rg')
+      assert.deepEqual( result, { r: 0.5, g: 0.25 } )
+    })
+    
+    it('will throw on invalid keys', () => {
+      const colour = new Colour()
+      assert.throws( () => {
+        colour.toObject( null )
+      })
+    })
+  })
+
+  describe('.toArray', () => {
+
+    it('will return expected result', () => {
+      const colour = new Colour( 0.5, 0.25, 0.125 )
+      let result = colour.toArray()
+      assert.deepEqual( result, [ 0.5, 0.25, 0.125, 1 ] )
+    })
+    
+    it('will throw on invalid length', () => {
+      const colour = new Colour()
+      assert.throws( () => {
+        colour.toArray( 8 )
+      })
+    })
+  })
+
+  describe('.to8BitArray', () => {
+
+    it('will return expected result', () => {
+      const colour = new Colour( 0.5, 0.25, 0.125 )
+      let result = colour.to8BitArray()
+      assert.deepEqual( result, [ 128, 64, 32, 255 ] )
+    })
+
+    it('will throw on invalid length', () => {
+      const colour = new Colour()
+      assert.throws( () => {
+        colour.to8BitArray( 8 )
+      })
     })
   })
 })
