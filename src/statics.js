@@ -1,5 +1,3 @@
-const util = require('./util')
-
 module.exports = 
 function addMixin( space, options ) {
 
@@ -8,7 +6,7 @@ function addMixin( space, options ) {
       let result = new space()
       for ( let index = 0; index < arguments.length; index ++ ) {
         if ( index == 0 )
-          result.set( arguments[index] )
+          result.setArguments( [arguments[index]], true )
         else 
           result[key]( arguments[index] )
       }

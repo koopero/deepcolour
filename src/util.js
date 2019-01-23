@@ -51,6 +51,7 @@ util.valueToHex = function ( v ) {
   return v
 }
 
+/* istanbul ignore next */
 util.valueToPercent = function ( v ) {
   v *= 100
   v = v.toFixed( 1 )
@@ -61,13 +62,6 @@ util.valueToPercent = function ( v ) {
 
 util.valueToAlpha = function ( v ) {
   return v.toFixed( 2 )
-}
-
-util.parseColour = function ( colour ) {
-  if ( !(colour instanceof Colour ) )
-    throw new Error(`Ain't a Colour`)
-
-  return colour
 }
 
 util.parseAmount = function ( amount ) {

@@ -11,8 +11,12 @@ function makeSpace( options ) {
   let hasRGBA = !isNaN( options.rgba )
 
   if ( hasRGBA ) {
+    /* istanbul ignore next */
     options.channels = options.channels || 'rgba'
-    options.defaults = options.defaults || [ 0, 0, 0, 1 ]
+    if ( 'undefined' == typeof options.defaults ) {
+      options.defaults = []
+      options.defaults[options.rgba+3] = 1
+    }
   }
 
   // parse channels

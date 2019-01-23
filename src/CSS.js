@@ -56,7 +56,6 @@ function addMixin( _class, options ) {
       return this.setRGB( r, g, b, alpha )
     }
 
-
     toCSS( format = 'auto' ) {
       switch( format ) {
         case 'rgba':
@@ -68,8 +67,8 @@ function addMixin( _class, options ) {
         case 'unclamped':
           return this.toCSSUnclamped()
 
-        default:
         case 'auto':
+        default:
           let alpha = this.alpha
           alpha = util.clampValue( alpha )
           if ( this.isRGBNormal() && alpha == 1 ) 
@@ -78,6 +77,7 @@ function addMixin( _class, options ) {
           return this.toCSSRGBA()
       }
     }
+
     toCSSRGBA() {
       let numbers = this.to8BitArray(3)
         , tag = 'rgb'

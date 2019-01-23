@@ -10,7 +10,6 @@ describe('composite', ()=> {
       let c = new Colour('#ffff00')
   
       a.add( b )
-      console.log(a,b)
       // hex will only be RGB
       assert.equal( a.css, c.css )
 

@@ -27,6 +27,20 @@ function baseClass( options ) {
       return clone
     }
 
+    //
+    // Channels
+    //
+
+    channelIndex( channel ) {
+      let index = parseInt( channel )
+      if ( !isNaN( index ) )
+        return index
+
+      if ( channel in this.keys )
+        return this.keys[channel]
+      
+      return -1
+    }
 
     eachChannel( callback ) {
       for ( var c = 0; c < LENGTH; c++ ) {
@@ -36,16 +50,12 @@ function baseClass( options ) {
           this[c] = result
       }
     }
-
+   
     //
     // Setters
     //
 
     set( ob ) {
-
-      if ( ob === null || ob == undefined )
-        return this
-
       if ( this.space.isColour( ob ) || Array.isArray( ob ) ) {
         this.eachChannel( ( v, c ) => ob[c] )
 
@@ -58,7 +68,7 @@ function baseClass( options ) {
       if ( global.Buffer && Buffer.isBuffer( ob ) )
         return this.set8BitArray( ob )
 
-      if ( ob !== null ) {
+      if ( ob !== null && ob !== undefined ) {
         return this.setKeys( ob )
       }
 
@@ -97,7 +107,7 @@ function baseClass( options ) {
     setKeys( ob ) {
       if ( 'object' == typeof ob )
         for ( let key in ob ) {
-          let channel = this.keys[key]
+          let channel = this.channelIndex( key )
           if ( channel != -1 )
             this.setChannel( channel, ob[key] )
         }
@@ -105,16 +115,20 @@ function baseClass( options ) {
       return this
     }
 
-    set8BitArray( input ) {
+    set8BitArray( input, offset = 0 ) {
       if ( !input || 'number' != typeof input.length )
         throw new Error('Expected input to be array-like.')
 
-      this.eachChannel( ( value, c ) => input[c] / 255 )
+      for ( let index = 0; index < input.length; index ++ )
+        if ( offset + index < LENGTH )
+          this.setChannelHex( offset + index, input[index] )
+
       return this
     }
 
     setChannel( channel, value ) {
-      channel = parseInt( channel ) || 0
+      channel = this.channelIndex( channel )
+
       if ( channel < 0 || channel >= LENGTH )
         throw new Error('Invalid channel')
 
@@ -137,7 +151,7 @@ function baseClass( options ) {
       } 
 
       if ( 'number' != typeof value ) 
-        throw new Error('Invalid input' )
+        throw new Error('Invalid input')
 
       value /= 255
 
@@ -148,17 +162,6 @@ function baseClass( options ) {
     //
     // Getters
     //
-
-    channelIndex( channel ) {
-      let index = parseInt( channel )
-      if ( !isNaN( index ) )
-        return index
-
-      if ( channel in this.keys )
-        return this.keys[channel]
-      
-      return -1
-    }
 
     getChannel( channel ) {
       let index = this.channelIndex( channel )
@@ -213,14 +216,6 @@ function baseClass( options ) {
       return result
     }
 
-    toRGBA() {
-      return [
-        this[0],
-        this[1],
-        this[2],
-        this[3]
-      ]
-    }
 
     toObject( keys ) {
       if ( 'undefined' == typeof keys )
@@ -247,7 +242,7 @@ function baseClass( options ) {
         length = LENGTH
 
       if ( length < 0 || length > LENGTH )
-        throw new Exception( 'Invalid length' )
+        throw new Error( 'Invalid length' )
 
       const buffer = Buffer.alloc( length )
 
@@ -263,7 +258,7 @@ function baseClass( options ) {
         length = LENGTH
 
       if ( length < 0 || length > LENGTH )
-        throw new Exception( 'Invalid length' )
+        throw new Error( 'Invalid length' )
 
       const array = new Array( length )
       for ( var c = 0; c < length; c++ )
@@ -278,7 +273,7 @@ function baseClass( options ) {
         length = LENGTH
 
       if ( length < 0 || length > LENGTH )
-        throw new Exception( 'Invalid length' )
+        throw new Error( 'Invalid length' )
 
       const array = new Array( length )
       for ( var c = 0; c < length; c++ )
@@ -305,7 +300,7 @@ function baseClass( options ) {
     //
     mix( b, amount ) {
       amount = util.parseAmount( amount )
-      // b = util.parseColour( b )
+      b = new (this.space)( b )
       this.eachChannel( ( value, channel ) =>
         value * ( 1 - amount ) + b[channel] * amount
       )

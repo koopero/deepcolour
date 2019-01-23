@@ -95,15 +95,11 @@ Set from an array of numbers in the range 0-255. Up to four values will be read,
 
 **toHexChannels** *( 'rgbahsv' )* `'ff00ffd4ffff'` Clamped, 8-bit values from RGB and HSV as hex.
 
-**toCSS** *( format = 'auto' | 'rgba' | 'hex' | 'unclamped' )* CSS in given strign format.
+**toCSS** *( format = 'auto' | 'rgba' | 'hex' | 'unclamped' )* CSS in given format.
 
 **toCSSRGBA** *()* `'rgb(255,0,255)'` Clamped, 8-bit values with auto adding alpha.
 
-**toCSSUnclamped** *()* `'rgba(255,0,255,1)'` Clamped, 8-bit values with auto adding alpha.
-
-
-
-
+**toCSSUnclamped** *()* `'rgba(1024,0,1024,1)'` Unclamped values in CSS range, always has alpha.
 
 ## Other Methods
 
@@ -151,7 +147,7 @@ assert.equal( colour.hex, '#ffff00' )
 
 By default `deepcolour` creates a colour space with `rgba` properties. The library can also be used to create and manipulate arbitrary vector spaces, with or without colour properties.
 
-## No Colour Vectors
+## Colourless Vectors
 
 ``` js
 const { Space } = require('deepcolour')
@@ -162,4 +158,22 @@ const Vector = Space({
 
 let vec = Vector.add( [ 1, 0, 0 ], { y: 0.5 } )
 assert.deepEqual( vec.toArray(), [ 1, 0.5, 0 ] )
+```
+
+## Full Vertex
+
+``` js
+const { Space } = require('deepcolour')
+const Vertex = Space({
+  rgba: 5,
+  channels: 'xyzuvrgba'
+})
+
+let vert = new Vertex( { x: 3, y: 2, z: 1 } )
+
+// All colour manipulation methods may be used.
+vert.set('cyan')
+vert.alpha = 0.5
+
+assert.deepEqual( vert.toArray(), [ 3, 2, 1, 0, 0, 0, 1, 1, 0.5 ] )
 ```

@@ -11,7 +11,34 @@ describe('arbitrary colour spaces', () => {
     })
 
     const colour = new space()
-    // assert.equal( colour.z, 0 )
+    assert.equal( colour.z, 0 )
+  })
+
+  it('length override', () => {
+    const space = Colour.Space( {
+      rgba: false,
+      channels: 'xyz',
+      length: 2
+    })
+
+    const colour = new space()
+    assert.equal( colour.length, 2 )
+    assert.deepEqual( colour.channels, [ 'x','y' ] )  
+  })
+
+
+  it('no hsv, css or getters', () => {
+    const space = Colour.Space( {
+      hsv: false,
+      css: false,
+      getters: false,
+    })
+
+    const colour = new space()
+    assert.equal( colour.length, 4 )
+    assert.isUndefined( colour.toCSS )
+    assert.isUndefined( colour.red )
+
   })
 
   describe( 'pure vector', () => {

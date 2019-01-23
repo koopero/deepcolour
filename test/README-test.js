@@ -4,20 +4,20 @@ describe('README', () => {
   it('Main example', () => {
     let colour = new Colour(1,0,0,1)
 
-    console.log( colour.hex )
+    // console.log( colour.hex )
     // #ff0000
 
     // make colour cyan by shifting hue
     colour.hue = 0.5
 
-    console.log( colour.hex )
+    // console.log( colour.hex )
     // #00ffff
 
     // Set the colour with a string
     colour.set('white')
 
     // Retrieve value and saturation
-    console.log( colour.value, colour.saturation )
+    // console.log( colour.value, colour.saturation )
     // 1,0
   })
   
@@ -59,5 +59,20 @@ describe('README', () => {
     
     let vec = Vector.add( [ 1, 0, 0 ], { y: 0.5 } )
     assert.deepEqual( vec.toArray(), [ 1, 0.5, 0 ] )
+  })
+
+  it('Full Vertex example', () => {
+    const { Space } = require('..')
+    const Vertex = Space({
+      rgba: 5,
+      channels: 'xyzuvrgba'
+    })
+
+    let vert = new Vertex( { x: 3, y: 2, z: 1 } )
+
+    vert.set('cyan')
+    vert.alpha = 0.5
+
+    assert.deepEqual( vert.toArray(), [ 3, 2, 1, 0, 0, 0, 1, 1, 0.5 ] )
   })
 })

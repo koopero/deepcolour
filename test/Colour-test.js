@@ -27,6 +27,16 @@ describe('Colour', () => {
       const colour = new Colour('#102030')
       assert.equal( colour.length, 4 )
     })
+
+    it('will have inspect', () => {
+      const colour = new Colour('#102030')
+      colour.inspect()
+    })
+
+    it('will have valueOf', () => {
+      const colour = new Colour('#102030')
+      colour.valueOf()
+    })
   })
 
   describe('clone', () => {
@@ -196,6 +206,24 @@ describe('Colour', () => {
 
       assert.equal( c.hex, '#000008')
     })
+
+    it('will throw on invalid value', () => {
+      let c = new Colour()
+      assert.throws( () => {
+        c.setChannelHex(2,null)
+      })
+
+      assert.throws( () => {
+        c.setChannelHex(2,'fff')
+      })
+    })
+
+    it('will throw on invalid channel', () => {
+      let c = new Colour()
+      assert.throws( () => {
+        c.setChannelHex('nochannel','88')
+      })
+    })
   })
 
   describe('.getChannel', () => {
@@ -211,6 +239,14 @@ describe('Colour', () => {
       const name = 'green'
       const c = new Colour( 0, value )
       assert.equal( c.getChannel( name ), value )
+    })
+
+    it('will throw on invalid channel', () => {
+      const name = 'nope'
+      const c = new Colour()
+      assert.throws( () => {
+        c.getChannel( name )
+      })
     })
   })
 
@@ -274,9 +310,7 @@ describe('Colour', () => {
 
   })
 
-
   describe('.toBuffer', () => {
-
     it('will return expected result', () => {
       const colour = new Colour( 0.5, 0.25, 0.125 )
       let result = colour.toBuffer()

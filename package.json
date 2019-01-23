@@ -21,7 +21,8 @@
     ]
   },
   "scripts": {
-    "test": "nyc --reporter=text mocha"
+    "test": "nyc --reporter=text mocha",
+    "watch": "mocha -wb -R min"
   },
   "author": "Samm Cooper <koopero@gmail.com>",
   "license": "MIT",
@@ -49,6 +50,7 @@
   "keywords": [
     "colour",
     "color",
+    "vector",
     "RGB",
     "HSV",
     "generative",

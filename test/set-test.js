@@ -34,7 +34,7 @@ describe('Colour.set', () => {
 
   it('from Buffer', () => {
     const buffer = Buffer.from('RGB')
-        , colour = new Colour().set8BitArray( buffer )
+        , colour = new Colour().set( buffer )
 
     assert.equal( colour.hex, '#524742' )
   })
@@ -45,6 +45,21 @@ describe('Colour.set', () => {
       assert( !colour.isBlack() )
       colour.setDefault()
       assert( colour.isBlack() )
+    })
+  })
+
+  describe('.setRGB', () => {
+    it('will set to black', () => {
+      const colour = new Colour( 'lime' )
+      assert( !colour.isBlack() )
+      colour.setRGB(0,0,0)
+      assert( colour.isBlack() )
+    })
+
+    it('array argument', () => {
+      const colour = new Colour()
+      colour.setRGB([1,0.5,0])
+      assert( colour.hex, '#ff8000' )
     })
   })
 
@@ -136,44 +151,4 @@ describe('Colour.set', () => {
     })
   })
 
-  describe('setString', () => {
-    it('from hsla()', () => {
-      const colour = new Colour()
-      colour.setString('hsla(262, 54%, 31%,65%)')
-      assert.equal( colour.hex, '#44247a' )
-      assert.equal( colour.alpha, 0.65 )
-    })
-    
-    it('from rgba()', () => {
-      const colour = new Colour()
-      colour.setString('rgba(255, 50%, 25%, 65%)')
-      assert.equal( colour.hex, '#ff8040' )
-      assert.equal( colour.alpha, 0.65 )
-    })
-
-    it('from rgb()', () => {
-      const colour = new Colour()
-      colour.setString('rgb(255, 50%, 25%)')
-      assert.equal( colour.hex, '#ff8040' )
-    })
-
-    it('from 6-digit hex', () => {
-      const colour = new Colour()
-      colour.setString('#ff8040')
-      assert.equal( colour.hex, '#ff8040' )
-    })
-
-    it('from 3-digit hex', () => {
-      const colour = new Colour()
-      colour.setString('#f84')
-      assert.equal( colour.hex, '#ff8844' )
-    })
-
-    it(`from 'transparent'`, () => {
-      const colour = new Colour()
-      assert.equal( colour.alpha, 1 )
-      colour.setString('transparent')
-      assert.equal( colour.alpha, 0 )
-    })
-  })
 })

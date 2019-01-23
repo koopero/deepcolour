@@ -3,54 +3,51 @@ const util = require('./util')
 
 module.exports = 
 function addMixin( _class, options ) {
-  const CHANNEL_TO_INDEX = {
-    'h': 0,
-    'hue': 0,
-    's': 1,
-    'sat': 1,
-    'saturation': 1,
-    'v': 2,
-    'val': 2,
-    'value': 2,
-  }
+  Object.assign( _class.prototype.keys, {
+    'h': -10,
+    'hue': -10,
+    's': -11,
+    'sat': -11,
+    'saturation': -11,
+    'v': -12,
+    'val': -12,
+    'value': -12,
+  } )
 
 
   class HSV extends _class {
-    getChannel( name ) {
-      let index = CHANNEL_TO_INDEX[ name ]
 
-      if ( index == 0 )
-        return this.hue
+    setChannel( channel, value ) {
+      let index = this.channelIndex( channel )
 
-      if ( index == 1 )
-        return this.saturation
+      switch( index ) {
+        case -10: this.setHSV( value, NaN, NaN ); break
+        case -11: this.setHSV( NaN, value, NaN ); break
+        case -12: this.setHSV( NaN, NaN, value ); break
+        default:
+          return super.setChannel( channel, value )
+      }
 
-      if ( index == 2 )
-        return this.value
-
-      return super.getChannel( name )
+      return this
     }
 
-    set hue ( value ) {
-      value = util.parseCSSHue( value )
-      this.setHSV( value, this.saturation, this.value  )
+    getChannel( channel ) {
+      let index = this.channelIndex( channel )
+
+      switch( index ) {
+        case -10: return this.getHSVHue()
+        case -11: return this.getHSVSaturation()
+        case -12: return this.getHSVValue()
+        default:
+          return super.getChannel( channel )
+      }
     }
 
-    set saturation ( value ) {
-      value = util.parseCSSValue( value )
-      this.setHSV( this.hue, value, this.value  )
-    }
-
-    set value ( value ) {
-      value = util.parseCSSValue( value )
-      this.setHSV( this.hue, this.saturation, value  )
-    }
-
-    get value () {
+    getHSVValue () {
       return Math.max( this.red, this.green, this.blue )
     }
 
-    get saturation () {
+    getHSVSaturation () {
       if ( this.isBlack() )
         return this._saturation || 0
 
@@ -58,10 +55,10 @@ function addMixin( _class, options ) {
       const min = Math.min( this.red, this.green, this.blue )
       const delta = max - min
 
-      return max > 0 ? delta / max : 0
+      return delta / max
     }
 
-    get hue() {
+    getHSVHue() {
       const max = Math.max( this.red, this.green, this.blue )
       const min = Math.min( this.red, this.green, this.blue )
       const delta = max - min
@@ -124,11 +121,11 @@ function addMixin( _class, options ) {
 
       switch ( hex ) {
         case 0: this.setRGB( val, eT, eP ); break
-        case 1: this.setRGB( eQ, val, eP ); break
-        case 2: this.setRGB( eP, val, eT ); break
-        case 3: this.setRGB( eP, eQ, val ); break
-        case 4: this.setRGB( eT, eP, val ); break
-        case 5: this.setRGB( val, eP, eQ ); break
+        /* istanbul ignore next */ case 1: this.setRGB( eQ, val, eP ); break
+        /* istanbul ignore next */ case 2: this.setRGB( eP, val, eT ); break
+        /* istanbul ignore next */ case 3: this.setRGB( eP, eQ, val ); break
+        /* istanbul ignore next */ case 4: this.setRGB( eT, eP, val ); break
+        /* istanbul ignore next */ case 5: this.setRGB( val, eP, eQ ); break
       }
 
       return this

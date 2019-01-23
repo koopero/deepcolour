@@ -2,25 +2,28 @@ const util = require('./util')
 
 module.exports = 
 function addMixin( space, options ) {
-  const RGBA_OFFSET = options.rgba
-
-
   const keys = space.prototype.keys
-  // console.log( { keys } )
+
+  const parsers = {
+    default: util.parseCSSValue,
+    'a': util.parseCSSAlpha,
+    'alpha': util.parseCSSAlpha,
+    'h': util.parseCSSHue,
+    'hue': util.parseCSSHue,
+  }
+
 
   for ( let key in keys ) {
     let index = keys[key]
-
-    if ( hasGetter( space.prototype, key ) )
-      continue
 
     let prop = {}
     prop.get = function() {
       return this.getChannel( index )
     }
 
+    let parser = parsers[key] || parsers.default
     prop.set = function( value ) {
-      value = util.parseCSSValue( value )
+      value = parser( value )
       return this.setChannel( index, value )
     }
 
@@ -31,7 +34,3 @@ function addMixin( space, options ) {
 
   return space
 }
-
-function hasGetter( proto, key ) {
-  return false
-} 

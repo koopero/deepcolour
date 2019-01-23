@@ -33,6 +33,7 @@ function addMixin( _class, options ) {
     getChannel8Bit( channel ) {
       var value = this[channel]
       value = parseFloat( value )
+      /* istanbul ignore next */
       value = value < 0 ? 0 : value > 1 ? 1 : value
       value = Math.round( value * 255 )
       return value
@@ -60,43 +61,21 @@ function addMixin( _class, options ) {
     }
 
     isBlack() {
-      return this[0] == 0
-          && this[1] == 0
-          && this[2] == 0
+      let { red, green, blue } = this
+      return red == 0
+          && green == 0
+          && blue == 0
     }
-
-    //
-    // RGB getters and setters
-    //
-    // set red   ( value ) {
-    //   value = util.parseCSSValue( value )
-    //   if ( !isNaN( value ) )
-    //     this[0] = value
-    // }
-    // set green ( value ) {
-    //   value = util.parseCSSValue( value )
-    //   if ( !isNaN( value ) )
-    //     this[1] = value
-    // }
-    // set blue  ( value ) {
-    //   value = util.parseCSSValue( value )
-    //   if ( !isNaN( value ) )
-    //     this[2] = value
-    // }
-    // set alpha ( value ) {
-    //   value = util.parseCSSAlpha( value )
-    //   if ( !isNaN( value ) )
-    //     this[3] = value
-    // }
 
     //
     // Chainable setStuff functions
     //
-
-
     setAlpha( alpha ) {
       alpha = parseFloat( alpha )
+
+      /* istanbul ignore else  */
       if ( !isNaN( alpha ) ) this[3] = alpha
+
       return this
     }
 
@@ -113,10 +92,14 @@ function addMixin( _class, options ) {
       b = util.parseCSSValue( args[2] )
       a = util.parseCSSAlpha( args[3] )
 
-      if ( !isNaN( r ) ) this[0] = r
-      if ( !isNaN( g ) ) this[1] = g
-      if ( !isNaN( b ) ) this[2] = b
-      if ( !isNaN( a ) ) this[3] = a
+      /* istanbul ignore else  */
+      if ( !isNaN( r ) ) this[0+RGBA_OFFSET] = r
+      /* istanbul ignore else  */
+      if ( !isNaN( g ) ) this[1+RGBA_OFFSET] = g
+      /* istanbul ignore else  */
+      if ( !isNaN( b ) ) this[2+RGBA_OFFSET] = b
+      /* istanbul ignore else  */
+      if ( !isNaN( a ) ) this[3+RGBA_OFFSET] = a
 
       return this
     }
@@ -128,33 +111,41 @@ function addMixin( _class, options ) {
       str = str.toLowerCase()
 
       if ( str in COLOUR_NAMES )
-        return this.set8BitArray( COLOUR_NAMES[str] )
+        return this.set8BitArray( COLOUR_NAMES[str], RGBA_OFFSET )
 
       let match
 
-      if ( match = /hsla?\(\s*(-?[\d\.]+%?)\s*,\s*(-?[\d\.]+%)\s*,\s*(-?[\d\.]+%)\s*(,\s*(-?[\d\.]+%?))?\s*\)/.exec( str ) ) {
+      if ( match = /hsla?\(\s*(-?[\d.]+%?)\s*,\s*(-?[\d.]+%)\s*,\s*(-?[\d.]+%)\s*(,\s*(-?[\d.]+%?))?\s*\)/.exec( str ) ) {
         this.setHSL( match[1], match[2], match[3], match[5] )
-      } else if ( match = /rgba?\(\s*(-?[\d\.]+%?)\s*,\s*(-?[\d\.]+%?)\s*,\s*(-?[\d\.]+%?)\s*(,\s*(-?[\d\.]+%?))?\s*\)/.exec( str ) ) {
-          this.setRGB(
-            match[1],
-            match[2],
-            match[3],
-            match[5]
-          )
+      } else if ( match = /rgba?\(\s*(-?[\d.]+%?)\s*,\s*(-?[\d.]+%?)\s*,\s*(-?[\d.]+%?)\s*(,\s*(-?[\d.]+%?))?\s*\)/.exec( str ) ) {
+        this.setRGB(
+          match[1],
+          match[2],
+          match[3],
+          match[5]
+        )
       } else if ( match = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/.exec( str ) ) {
-        this.setChannelHex( 0, match[1] )
-        this.setChannelHex( 1, match[2] )
-        this.setChannelHex( 2, match[3] )
-      } else if ( match = /^#?([0-9a-f])([0-9a-f])([0-9a-f])/.exec( str ) ) {
-        this.setChannelHex( 0, match[1] )
-        this.setChannelHex( 1, match[2] )
-        this.setChannelHex( 2, match[3] )
+        this.setChannelHex( 0+RGBA_OFFSET, match[1] )
+        this.setChannelHex( 1+RGBA_OFFSET, match[2] )
+        this.setChannelHex( 2+RGBA_OFFSET, match[3] )
+      } else /* istanbul ignore next  */ if ( match = /^#?([0-9a-f])([0-9a-f])([0-9a-f])/.exec( str ) ) {
+        this.setChannelHex( 0+RGBA_OFFSET, match[1] )
+        this.setChannelHex( 1+RGBA_OFFSET, match[2] )
+        this.setChannelHex( 2+RGBA_OFFSET, match[3] )
       }
 
       return this
     }
 
 
+    toRGBA() {
+      return [
+        this[0+RGBA_OFFSET],
+        this[1+RGBA_OFFSET],
+        this[2+RGBA_OFFSET],
+        this[3+RGBA_OFFSET]
+      ]
+    }
 
 
   }
