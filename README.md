@@ -1,5 +1,3 @@
-[![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
-
 `deepcolour` is a stateful library for the parsing, processing and formatting of RGBA colours.
 
 # Features
