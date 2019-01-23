@@ -49,4 +49,15 @@ describe('README', () => {
     // Is now yellow
     assert.equal( colour.hex, '#ffff00' )
   })
+
+  it('Colourless Vector example', () => {
+    const { Space } = Colour
+    const Vector = Space({
+      rgba: false,
+      channels: 'xyz'
+    })
+    
+    let vec = Vector.add( [ 1, 0, 0 ], { y: 0.5 } )
+    assert.deepEqual( vec.toArray(), [ 1, 0.5, 0 ] )
+  })
 })

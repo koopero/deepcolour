@@ -143,18 +143,32 @@ describe('Colour.set', () => {
       assert.equal( colour.hex, '#44247a' )
       assert.equal( colour.alpha, 0.65 )
     })
+    
     it('from rgba()', () => {
       const colour = new Colour()
       colour.setString('rgba(255, 50%, 25%, 65%)')
       assert.equal( colour.hex, '#ff8040' )
       assert.equal( colour.alpha, 0.65 )
     })
+
     it('from rgb()', () => {
       const colour = new Colour()
       colour.setString('rgb(255, 50%, 25%)')
       assert.equal( colour.hex, '#ff8040' )
-      // assert.equal( colour.alpha, 0.65 )
     })
+
+    it('from 6-digit hex', () => {
+      const colour = new Colour()
+      colour.setString('#ff8040')
+      assert.equal( colour.hex, '#ff8040' )
+    })
+
+    it('from 3-digit hex', () => {
+      const colour = new Colour()
+      colour.setString('#f84')
+      assert.equal( colour.hex, '#ff8844' )
+    })
+
     it(`from 'transparent'`, () => {
       const colour = new Colour()
       assert.equal( colour.alpha, 1 )

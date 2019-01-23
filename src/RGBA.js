@@ -39,28 +39,24 @@ function addMixin( _class, options ) {
     }
 
     isRGBNormal() {
-      return this[0] >= 0
-          && this[0] <= 1
-          && this[1] >= 0
-          && this[1] <= 1
-          && this[2] >= 0
-          && this[2] <= 1
-    }
+      let { red, green, blue } = this
 
-    isNormal() {
-      return this[0] >= 0
-          && this[0] <= 1
-          && this[1] >= 0
-          && this[1] <= 1
-          && this[2] >= 0
-          && this[2] <= 1
-          && this[3] >= 0
-          && this[3] <= 1
+      return red >= 0
+          && red <= 1
+          && green >= 0
+          && green <= 1
+          && blue >= 0
+          && blue <= 1
     }
 
     isGray() {
-      return this[0] == this[1]
-          && this[1] == this[2]
+      let { red, green, blue } = this
+      return red == green
+          && green == blue
+    }
+
+    isGrey() {
+      return this.isGray()
     }
 
     isBlack() {
@@ -92,12 +88,6 @@ function addMixin( _class, options ) {
     //   if ( !isNaN( value ) )
     //     this[3] = value
     // }
-
-    get red   () { return this[0] }
-    get green () { return this[1] }
-    get blue  () { return this[2] }
-    get alpha () { return this[3] }
-
 
     //
     // Chainable setStuff functions

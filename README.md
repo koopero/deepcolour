@@ -145,3 +145,21 @@ colour.value = 1
 // Is now yellow
 assert.equal( colour.hex, '#ffff00' )
 ```
+
+
+# Vectors
+
+By default `deepcolour` creates a colour space with `rgba` properties. The library can also be used to create and manipulate arbitrary vector spaces, with or without colour properties.
+
+## No Colour Vectors
+
+``` js
+const { Space } = require('deepcolour')
+const Vector = Space({
+  rgba: false,
+  channels: 'xyz'
+})
+
+let vec = Vector.add( [ 1, 0, 0 ], { y: 0.5 } )
+assert.deepEqual( vec.toArray(), [ 1, 0.5, 0 ] )
+```

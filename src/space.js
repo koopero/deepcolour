@@ -56,6 +56,7 @@ function makeSpace( options ) {
 
   space.prototype.space = space
   space.prototype.length = options.length
+  space.prototype.channels = options.channels
   space.options = options
 
   space.isColour = function ( object ) {

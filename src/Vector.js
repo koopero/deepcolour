@@ -169,11 +169,11 @@ function baseClass( options ) {
     }
 
     toString() {
-      return this.toCSSUnclamped()
+      return this.toArray().join(',')
     }
 
     valueOf() {
-      return this.toCSSUnclamped()
+      return this.toArray()
     }
 
     inspect() {
@@ -195,9 +195,14 @@ function baseClass( options ) {
     toHexChannels( channels ) {
       let result = ''
 
-      channels = channels || 'rgb'
-      if ( 'string' != typeof channels )
-        throw new Error('channels must be string')
+      if ( 'undefined' == typeof channels )
+        channels = this.channels
+
+      if ( 'string' == typeof channels )
+        channels = channels.split('')
+
+      if ( !Array.isArray( channels ) )
+        throw new Error('channels must be string or array')
 
       for ( let i = 0; i < channels.length; i ++ ) {
         let value = this.getChannel( channels[i] )
@@ -218,8 +223,11 @@ function baseClass( options ) {
     }
 
     toObject( keys ) {
-      if ( !keys )
-        keys = [ 'r','g','b','a' ]
+      if ( 'undefined' == typeof keys )
+        keys = this.channels
+
+      if ( 'string' == typeof keys )
+        keys = keys.split('')
 
       if ( !Array.isArray( keys ) )
         throw new Error('keys must be array')
@@ -227,7 +235,7 @@ function baseClass( options ) {
       const result = {}
 
       keys.forEach( ( key ) => {
-        result[key] = this.channelByName( key )
+        result[key] = this.getChannel( key )
       })
 
       return result
@@ -236,9 +244,9 @@ function baseClass( options ) {
     toBuffer( length ) {
       length = parseInt( length )
       if ( isNaN( length ) )
-        length = 4
+        length = LENGTH
 
-      if ( length < 0 || length > 4 )
+      if ( length < 0 || length > LENGTH )
         throw new Exception( 'Invalid length' )
 
       const buffer = Buffer.alloc( length )
@@ -249,12 +257,27 @@ function baseClass( options ) {
       return buffer
     }
 
+    toArray( length ) {
+      length = parseInt( length )
+      if ( isNaN( length ) )
+        length = LENGTH
+
+      if ( length < 0 || length > LENGTH )
+        throw new Exception( 'Invalid length' )
+
+      const array = new Array( length )
+      for ( var c = 0; c < length; c++ )
+        array[c] = this.getChannel( c )
+
+      return array
+    }
+
     to8BitArray( length ) {
       length = parseInt( length )
       if ( isNaN( length ) )
-        length = 4
+        length = LENGTH
 
-      if ( length < 0 || length > 4 )
+      if ( length < 0 || length > LENGTH )
         throw new Exception( 'Invalid length' )
 
       const array = new Array( length )
@@ -264,6 +287,18 @@ function baseClass( options ) {
       return array
     }
 
+    //
+    // Checkers
+    //
+    isNormal() {
+      for ( let index = 0; index < LENGTH; index ++ ) {
+        let value = this.getChannel( index )
+        if ( value < 0 || value > 1 )
+          return false
+      }
+      
+      return true
+    }
 
     //
     // Composite operators
