@@ -1,8 +1,5 @@
-const util = require('./util')
-
-
 module.exports = 
-function addMixin( _class, options ) {
+function addMixin( _class ) {
   Object.assign( _class.prototype.keys, {
     'h': -10,
     'hue': -10,
@@ -114,10 +111,10 @@ function addMixin( _class, options ) {
       }
 
       const hex = Math.floor( hue * 6 )
-          , inHex = hue * 6 - hex
-          , eP = val * (1 - sat)
-          , eQ = val * (1 - (sat * inHex))
-          , eT = val * (1 - (sat * (1 - inHex)))
+      const inHex = hue * 6 - hex
+      const eP = val * (1 - sat)
+      const eQ = val * (1 - (sat * inHex))
+      const eT = val * (1 - (sat * (1 - inHex)))
 
       switch ( hex ) {
         case 0: this.setRGB( val, eT, eP ); break

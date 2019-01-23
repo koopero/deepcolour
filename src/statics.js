@@ -1,5 +1,5 @@
 module.exports = 
-function addMixin( space, options ) {
+function addMixin( space ) {
 
   function wrapMathProp( key ) {
     return function() {

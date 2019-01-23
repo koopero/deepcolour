@@ -17,17 +17,18 @@ function addMixin( space, options ) {
     let index = keys[key]
 
     let prop = {}
-    prop.get = function() {
-      return this.getChannel( index )
-    }
+    if ( options.getters )
+      prop.get = function() {
+        return this.getChannel( index )
+      }
 
-    let parser = parsers[key] || parsers.default
-    prop.set = function( value ) {
-      value = parser( value )
-      return this.setChannel( index, value )
+    if ( options.setters ) {
+      let parser = parsers[key] || parsers.default
+      prop.set = function( value ) {
+        value = parser( value )
+        return this.setChannel( index, value )
+      }
     }
-
-    // console.log('define', key, prop )
 
     Object.defineProperty( space.prototype, key, prop )
   }

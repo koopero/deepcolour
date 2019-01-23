@@ -22,7 +22,8 @@
   },
   "scripts": {
     "test": "nyc --reporter=text mocha",
-    "watch": "mocha -wb -R min"
+    "watch": "mocha -wb -R min",
+    "lint": "eslint test src"
   },
   "author": "Samm Cooper <koopero@gmail.com>",
   "license": "MIT",
@@ -35,6 +36,7 @@
     "babel-plugin-transform-es2015-template-literals": "^6.8.0",
     "babelify": "^7.3.0",
     "chai": "^3.5.0",
+    "eslint": "^5.12.1",
     "nyc": "^13.1.0"
   },
   "dependencies": {

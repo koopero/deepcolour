@@ -1,5 +1,8 @@
+/* eslint-env node, mocha */
+
 const util = require('../src/util')
 const assert = require('chai').assert
+
 
 describe('util', () => {
   describe('clampValue', () => {

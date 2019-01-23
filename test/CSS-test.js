@@ -1,3 +1,5 @@
+/* eslint-env node, mocha */
+
 const assert = require('chai').assert
 
 describe('CSS', () => {
@@ -6,14 +8,14 @@ describe('CSS', () => {
   describe('get hex', () => {
     it('will regular hex', () => {
       const colour = new Colour( Math.random(), Math.random(), Math.random() )
-          , hex = colour.hex
+        , hex = colour.hex
 
       assert.match( hex, /#[0-9A-F]{6}/i )
     })
 
     it('will return clamped values when colour is out of range', () => {
       const colour = new Colour(2,-1,0.5,3)
-          , hex = colour.hex
+        , hex = colour.hex
 
       assert.equal( hex, '#ff0080' )
     })
@@ -115,7 +117,7 @@ describe('CSS', () => {
       assert.equal( colour.hex, '#ff8844' )
     })
 
-    it(`from 'transparent'`, () => {
+    it('from \'transparent\'', () => {
       const colour = new Colour()
       assert.equal( colour.alpha, 1 )
       colour.setString('transparent')

@@ -1,5 +1,7 @@
+/* eslint-env node, mocha */
 const Colour = require('..')
-    , assert = require('chai').assert
+  , assert = require('chai').assert
+    
 describe('README', () => {
   it('Main example', () => {
     let colour = new Colour(1,0,0,1)

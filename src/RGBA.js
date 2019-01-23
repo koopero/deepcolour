@@ -105,6 +105,7 @@ function addMixin( _class, options ) {
     }
 
     setString( str ) {
+      /* eslint no-cond-assign: "off"*/
       if ( 'transparent' == str )
         return this.setAlpha( 0 )
 

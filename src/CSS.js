@@ -1,8 +1,8 @@
 const util = require('./util')
 
 module.exports = 
-function addMixin( _class, options ) {
-  class CSS extends _class {
+function addMixin( space ) {
+  class CSS extends space {
     //
     // String getters / setters
     //
@@ -27,30 +27,30 @@ function addMixin( _class, options ) {
     setHSL() {
       var args = arguments.length == 1 && arguments[0].length ? arguments[0] : arguments
       const h = util.parseCSSHue( args[0] )
-          , s = util.parseCSSValue( args[1] )
-          , l = util.parseCSSValue( args[2] )
-          , alpha = util.parseCSSAlpha( args[3] )
+        , s = util.parseCSSValue( args[1] )
+        , l = util.parseCSSValue( args[2] )
+        , alpha = util.parseCSSAlpha( args[3] )
 
 
       // Shamelessly ganked from http://stackoverflow.com/a/9493060
-      var r, g, b;
+      var r, g, b
       if(s == 0){
-          r = g = b = l; // achromatic
+        r = g = b = l // achromatic
       } else {
-          var hue2rgb = function hue2rgb(p, q, t){
-              if(t < 0) t += 1;
-              if(t > 1) t -= 1;
-              if(t < 1/6) return p + (q - p) * 6 * t;
-              if(t < 1/2) return q;
-              if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-              return p;
-          }
+        var hue2rgb = function hue2rgb(p, q, t){
+          if(t < 0) t += 1
+          if(t > 1) t -= 1
+          if(t < 1/6) return p + (q - p) * 6 * t
+          if(t < 1/2) return q
+          if(t < 2/3) return p + (q - p) * (2/3 - t) * 6
+          return p
+        }
 
-          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-          var p = 2 * l - q;
-          r = hue2rgb(p, q, h + 1/3);
-          g = hue2rgb(p, q, h);
-          b = hue2rgb(p, q, h - 1/3);
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s
+        var p = 2 * l - q
+        r = hue2rgb(p, q, h + 1/3)
+        g = hue2rgb(p, q, h)
+        b = hue2rgb(p, q, h - 1/3)
       }
 
       return this.setRGB( r, g, b, alpha )
@@ -69,7 +69,7 @@ function addMixin( _class, options ) {
 
         case 'auto':
         default:
-          let alpha = this.alpha
+          var alpha = this.alpha
           alpha = util.clampValue( alpha )
           if ( this.isRGBNormal() && alpha == 1 ) 
             return this.toHexString()
@@ -111,10 +111,10 @@ function addMixin( _class, options ) {
       super.setKeys( ob )
 
       const self = this
-          , props = [
-              ['hex'],
-              ['css']
-            ]
+        , props = [
+          ['hex'],
+          ['css']
+        ]
 
       props.forEach( function( keys ) {
         var prop

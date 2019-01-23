@@ -1,3 +1,5 @@
+/* eslint-env node, mocha */
+
 const assert = require('chai').assert
 
 describe('Colour', () => {
@@ -71,8 +73,8 @@ describe('Colour', () => {
   describe('mix', () => {
     it('will mix colours', () => {
       const a = new Colour( 0, 0, 1, 1 )
-          , b = new Colour( 0, 1, 0, 1 )
-          , e = new Colour( 0, 0.5, 0.5, 1 )
+        , b = new Colour( 0, 1, 0, 1 )
+        , e = new Colour( 0, 0.5, 0.5, 1 )
 
       a.mix( b, 0.5 )
       assert.equal( a.toHexString(), e.toHexString() )
@@ -124,14 +126,14 @@ describe('Colour', () => {
   describe('get css', () => {
     it('will return hex when possible', () => {
       const colour = new Colour( Math.random(), Math.random(), Math.random() )
-          , css = colour.css
+        , css = colour.css
 
       assert.match( css, /#[0-9A-F]{6}/i )
     })
 
     it('will return rgba() when alpha is not 1', () => {
       const colour = new Colour('blue').setAlpha(0.5)
-          , css = colour.css
+        , css = colour.css
 
       assert.equal( css, 'rgba(0,0,255,0.50)' )
     })
@@ -154,14 +156,14 @@ describe('Colour', () => {
   describe('get hex', () => {
     it('will regular hex', () => {
       const colour = new Colour( Math.random(), Math.random(), Math.random() )
-          , hex = colour.hex
+        , hex = colour.hex
 
       assert.match( hex, /#[0-9A-F]{6}/i )
     })
 
     it('will return clamped values when colour is out of range', () => {
       const colour = new Colour(2,-1,0.5,3)
-          , hex = colour.hex
+        , hex = colour.hex
 
       assert.equal( hex, '#ff0080' )
     })
@@ -170,15 +172,15 @@ describe('Colour', () => {
   describe('.equal', () => {
     it('will compare colours', () => {
       const a = new Colour().setRandom()
-          , b = new Colour( a )
+        , b = new Colour( a )
 
       assert( Colour.equal( a, b ) )
     })
 
     it('will compare many args', () => {
       const a = new Colour().setRandom()
-          , b = new Colour( a )
-          , c = new Colour()
+        , b = new Colour( a )
+        , c = new Colour()
 
       assert( Colour.equal( a, b, a, b, a ) )
       assert( !Colour.equal( a, b, a, b, a, c ) )
