@@ -24,7 +24,7 @@ describe('math', () => {
       assert.deepEqual( vec.toArray(), [ 2, 4 ] )
     })
 
-    xit('in-place, number', () => {
+    it('in-place, number', () => {
       const vec = new Vector( 1, 2 )
       vec.add( 1 )
       assert.deepEqual( vec.toArray(), [ 2, 3 ] )
@@ -80,4 +80,18 @@ describe('math', () => {
       assert.deepEqual( result.toArray(), [ -0.5, -2 ] )
     })
   })
+
+  describe('equal', () => {
+    it('static call', () => {
+      assert.equal( Vector.equal( [ 1, 2 ], [ 1, 2 ] ), true )
+      assert.equal( Vector.equal( [ 1, 2 ], [ 1, 2 ], { x: 1, y: 2 } ), true )
+      assert.equal( Vector.equal( [ 1, 2 ], [ 2, 1 ] ), false )
+    })
+
+    it('method call', () => {
+      const vec = new Vector( 1, 2 )
+      assert.equal( vec.equal( [1,2] ), true)
+    })
+  })
+
 })

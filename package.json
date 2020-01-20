@@ -1,6 +1,6 @@
 {
   "name": "deepcolour",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Parsing, conversion and manipulation of RGBA, CSS and HSV colours, as well as vectors",
   "main": "index.js",
   "scripts": {

@@ -50,7 +50,7 @@ describe('Colour.set', () => {
     })
   })
 
-  describe('.setRGB', () => {
+  describe('setRGB', () => {
     it('will set to black', () => {
       const colour = new Colour( 'lime' )
       assert( !colour.isBlack() )
@@ -62,6 +62,33 @@ describe('Colour.set', () => {
       const colour = new Colour()
       colour.setRGB([1,0.5,0])
       assert( colour.hex, '#ff8000' )
+    })
+  })
+
+  describe('setChannel', () => {
+    it('will set alpha', () => {
+      const colour = new Colour()
+      colour.setChannel('alpha', 0.5 )
+      assert.equal( colour.alpha, 0.5 )
+    })
+
+    it('will set hue', () => {
+      const colour = new Colour('red')
+      colour.setChannel('hue', 0.5 )
+      assert.equal( colour.hex, '#00ffff' )
+    })
+
+    it('will set channel index', () => {
+      const colour = new Colour('red')
+      colour.setChannel(1, 0.5 )
+      assert.equal( colour.hex, '#ff8000' )
+    })
+
+    it('will ignore NaN', () => {
+      const colour = new Colour('red')
+      colour.setChannel(1, 0.5 )
+      colour.setChannel(1, NaN )
+      assert.equal( colour.hex, '#ff8000' )
     })
   })
 
@@ -104,10 +131,28 @@ describe('Colour.set', () => {
       c.setArguments([0.5], true )
       assert.equal( c.toHexChannels('rgba'), '80808080' )
     })
+
+    it('from object', () => {
+      const c = new Colour()
+      c.setArguments([{ red: 0.5, g: 1 }], true )
+      assert.equal( c.toHexChannels('rgba'), '80ff00ff' )
+    })
+
+    it('from nothing', () => {
+      const c = new Colour('yellow')
+      c.setArguments([ undefined ] )
+      assert.equal( c.toHexChannels('rgb'), 'ffff00' )
+    })
   })
 
 
   describe('setKeys', () => {
+    it('will do nothing', () => {
+      const colour = new Colour( 'red')
+      colour.setKeys()
+      assert.equal( colour.hex, '#ff0000' )
+    })
+
     it('from { red green blue }', () => {
       const colour = new Colour()
       colour.setKeys( { r: 0.1, green: 0.2, blue: 0.3, a: 0.5 } )
@@ -151,6 +196,15 @@ describe('Colour.set', () => {
       assert.throws( () => colour.set8BitArray( {} ) )
       assert.throws( () => colour.set8BitArray( false ) )
     })
+
+    it('will ignore too long input', () => {
+      const array = [ 0xde, 0xad, 0xbe, 0xef, 0x31, 0x33, 0x70 ]
+        , colour = new Colour().set8BitArray( array  )
+
+      assert.equal( colour.hex, '#deadbe' )
+    })
+
+
   })
 
 })

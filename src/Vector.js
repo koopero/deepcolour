@@ -308,14 +308,14 @@ function baseClass( options ) {
 
     add() {
       let b = new (this.space)()
-      b.setArguments( arguments )
+      b.setArguments( arguments, true )
       this.eachChannel( ( value, channel ) => value + b[channel] )
       return this
     }
 
     subtract() {
       let b = new (this.space)()
-      b.setArguments( arguments )
+      b.setArguments( arguments, true )
       this.eachChannel( ( value, channel ) => value - b[channel] )
       return this
     }
@@ -346,6 +346,14 @@ function baseClass( options ) {
       b.setArguments( arguments, true )
       this.eachChannel( ( value, channel ) => Math.max( value, b[channel] ) )
       return this
+    }
+
+    equal() {
+      let b = new (this.space)()
+      b.setArguments( arguments, true )
+      let equal = true
+      this.eachChannel( ( value, channel ) => equal = equal && value == b[channel] )
+      return equal
     }
 
   }
