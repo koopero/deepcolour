@@ -356,6 +356,13 @@ function baseClass( options ) {
       return equal
     }
 
+    //
+    // Misc Internal
+    // 
+
+    _deriveHueSat() {
+      // Blank, for overloading in HSV space.
+    }
   }
 
   Vector.prototype.keys = keys
