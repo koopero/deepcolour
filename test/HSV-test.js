@@ -61,8 +61,9 @@ describe('HSV', () => {
   })
 
   describe('hue / sat preservation', () => {
+    const Colour = require('..')
+
     it('will maintain HS in single object after .setRGB()', () => {
-      const Colour = require('..')
       let colour = new Colour()
       assert( colour.isBlack() )
       colour.setRGB( [ 0.5, 1, 1 ] )
@@ -76,12 +77,19 @@ describe('HSV', () => {
     })
 
     it('will maintain hue after CSS set', () => {
-      const Colour = require('..')
       let colour = new Colour( 'yellow' )
       let orig = colour.hue 
       assert.equal( orig, 1/6 )
       colour.set('black')
       assert.equal( colour.hue, orig )
+    })
+
+    it('will maintain hue through clone', () => {
+      let first = new Colour( 'cyan' )
+      assert.equal( first.hue, 0.5 )
+      first.set('black')
+      let second = first.clone()
+      assert.equal( second.hue, 0.5 )
     })
   })
 })

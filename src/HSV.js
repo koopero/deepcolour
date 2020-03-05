@@ -14,6 +14,13 @@ function addMixin( _class ) {
 
   class HSV extends _class {
 
+    clone() {
+      const clone = super.clone()
+      clone._hue = this._hue
+      clone._saturation = this._saturation
+      return clone
+    }
+
     setChannel( channel, value ) {
       let index = this.channelIndex( channel )
 
