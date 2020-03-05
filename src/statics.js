@@ -20,6 +20,8 @@ function addMixin( space ) {
   space.divide = wrapMathProp('divide')
   space.min = wrapMathProp('min')
   space.max = wrapMathProp('max')
-
+  space.extent = ( arg ) => (new space( arg )).extent()
+  space.extentSquared = ( arg ) => (new space( arg )).extentSquared()
+  
   return space
 }

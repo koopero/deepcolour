@@ -94,4 +94,15 @@ describe('math', () => {
     })
   })
 
+  describe('extent', () => {
+    it('static call', () => {
+      assert.equal( Vector.extent( [ 1,2 ] ), Math.sqrt( 5 ) )
+    })
+
+    it('method call', () => {
+      const vec = new Vector( 1, 2 )
+      assert.equal( vec.extent(), Math.sqrt( 5 ) )
+    })
+  })
+
 })

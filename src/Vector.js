@@ -356,6 +356,16 @@ function baseClass( options ) {
       return equal
     }
 
+    extent() {
+      return Math.sqrt( this.extentSquare() )
+    }
+
+    extentSquare() {
+      let result = 0
+      this.eachChannel( ( value ) => result += value * value )
+      return result
+    }
+
     //
     // Misc Internal
     // 
