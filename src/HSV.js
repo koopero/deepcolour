@@ -14,6 +14,13 @@ function addMixin( _class ) {
 
   class HSV extends _class {
 
+    clone() {
+      const clone = super.clone()
+      clone._hue = this._hue
+      clone._saturation = this._saturation
+      return clone
+    }
+
     setChannel( channel, value ) {
       let index = this.channelIndex( channel )
 
@@ -48,24 +55,23 @@ function addMixin( _class ) {
       if ( this.isBlack() )
         return this._saturation || 0
 
-      const max = Math.max( this.red, this.green, this.blue )
-      const min = Math.min( this.red, this.green, this.blue )
+      const [ red, green, blue ] = this.toRGBA()
+      const max = Math.max( red, green, blue )
+      const min = Math.min( red, green, blue )
       const delta = max - min
 
       return delta / max
     }
 
     getHSVHue() {
-      const max = Math.max( this.red, this.green, this.blue )
-      const min = Math.min( this.red, this.green, this.blue )
+      const [ red, green, blue ] = this.toRGBA()
+      const max = Math.max( red, green, blue )
+      const min = Math.min( red, green, blue )
+
       const delta = max - min
 
       if ( delta <= 0 )
         return this._hue || 0
-
-      const red = this.red
-      const green = this.green
-      const blue = this.blue
 
       var hue
       if ( red == max )
@@ -95,9 +101,9 @@ function addMixin( _class ) {
       sat = parseFloat( sat )
       val = parseFloat( val )
 
-      if ( isNaN( hue ) ) hue = this.hue
-      if ( isNaN( sat ) ) sat = this.saturation
-      if ( isNaN( val ) ) val = this.value
+      if ( isNaN( hue ) ) hue = this.getHSVHue()
+      if ( isNaN( sat ) ) sat = this.getHSVSaturation()
+      if ( isNaN( val ) ) val = this.getHSVValue()
 
       this._hue = hue
       hue = hue % 1
@@ -106,7 +112,7 @@ function addMixin( _class ) {
 
 
       if ( sat == 0 ) {
-        this.setRGB( val, val, val )
+        this._setRGBUnsafe( val, val, val )
         return this
       }
 
@@ -117,17 +123,35 @@ function addMixin( _class ) {
       const eT = val * (1 - (sat * (1 - inHex)))
 
       switch ( hex ) {
-        case 0: this.setRGB( val, eT, eP ); break
-        /* istanbul ignore next */ case 1: this.setRGB( eQ, val, eP ); break
-        /* istanbul ignore next */ case 2: this.setRGB( eP, val, eT ); break
-        /* istanbul ignore next */ case 3: this.setRGB( eP, eQ, val ); break
-        /* istanbul ignore next */ case 4: this.setRGB( eT, eP, val ); break
-        /* istanbul ignore next */ case 5: this.setRGB( val, eP, eQ ); break
+        case 0: this._setRGBUnsafe( val, eT, eP ); break
+        /* istanbul ignore next */ case 1: this._setRGBUnsafe( eQ, val, eP ); break
+        /* istanbul ignore next */ case 2: this._setRGBUnsafe( eP, val, eT ); break
+        /* istanbul ignore next */ case 3: this._setRGBUnsafe( eP, eQ, val ); break
+        /* istanbul ignore next */ case 4: this._setRGBUnsafe( eT, eP, val ); break
+        /* istanbul ignore next */ case 5: this._setRGBUnsafe( val, eP, eQ ); break
       }
 
       return this
     }
 
+
+    _deriveHueSat() {
+      let [ R,G,B ] = this.toRGBA()
+
+      if ( R == 0 && G == 0 && B == 0 ) {
+        // Black, nothing to derive
+        return 
+      }
+
+      this._saturation = this.getHSVSaturation()
+
+      if ( R == G && G == B ) {
+        // Grey, cannot derive hue 
+        return 
+      }
+
+      this._hue = this.getHSVHue()
+    }
   }
 
   return HSV

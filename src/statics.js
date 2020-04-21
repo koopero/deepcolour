@@ -28,5 +28,8 @@ function addMixin( space ) {
     return A 
   }
 
+  space.extent = ( arg ) => (new space( arg )).extent()
+  space.extentSquared = ( arg ) => (new space( arg )).extentSquared()
+  
   return space
 }

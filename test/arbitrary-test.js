@@ -140,7 +140,6 @@ describe('arbitrary colour spaces', () => {
       }
     })
 
-
     it('will have right length', () => {
       const colour = new space() 
       assert.equal( colour.length, 6 )

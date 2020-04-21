@@ -1,4 +1,4 @@
-`deepcolour` is a stateful library for the parsing, processing and formatting of RGBA colours.
+`deepcolour` is a stateful library for the parsing, processing and formatting of RGBA colours, as well as vector spaces.
 
 # Features
 

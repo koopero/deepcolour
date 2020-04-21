@@ -308,14 +308,14 @@ function baseClass( options ) {
 
     add() {
       let b = new (this.space)()
-      b.setArguments( arguments )
+      b.setArguments( arguments, true )
       this.eachChannel( ( value, channel ) => value + b[channel] )
       return this
     }
 
     subtract() {
       let b = new (this.space)()
-      b.setArguments( arguments )
+      b.setArguments( arguments, true )
       this.eachChannel( ( value, channel ) => value - b[channel] )
       return this
     }
@@ -405,6 +405,31 @@ function baseClass( options ) {
 
       result = Math.sqrt( result )
       return result
+    }
+    equal() {
+      let b = new (this.space)()
+      b.setArguments( arguments, true )
+      let equal = true
+      this.eachChannel( ( value, channel ) => equal = equal && value == b[channel] )
+      return equal
+    }
+
+    extent() {
+      return Math.sqrt( this.extentSquare() )
+    }
+
+    extentSquare() {
+      let result = 0
+      this.eachChannel( ( value ) => result += value * value )
+      return result
+    }
+
+    //
+    // Misc Internal
+    // 
+
+    _deriveHueSat() {
+      // Blank, for overloading in HSV space.
     }
   }
 

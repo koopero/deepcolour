@@ -16,19 +16,7 @@ function addMixin( _class, options ) {
     'alpha':RGBA_OFFSET +  3, 
   } )
 
-  
-
-
   class RGBA extends _class {
-
-    // getChannelByName( name ) {
-    //   let index = this.keys[ name ] 
-
-    //   if ( !index && index != 0 )
-    //     return NaN
-
-    //   return parseFloat( this[index] )
-    // }
 
     getChannel8Bit( channel ) {
       var value = this[channel]
@@ -40,7 +28,7 @@ function addMixin( _class, options ) {
     }
 
     isRGBNormal() {
-      let { red, green, blue } = this
+      let [ red, green, blue ] = this.toRGBA()
 
       return red >= 0
           && red <= 1
@@ -51,7 +39,7 @@ function addMixin( _class, options ) {
     }
 
     isGray() {
-      let { red, green, blue } = this
+      let [ red, green, blue ] = this.toRGBA()
       return red == green
           && green == blue
     }
@@ -61,7 +49,7 @@ function addMixin( _class, options ) {
     }
 
     isBlack() {
-      let { red, green, blue } = this
+      let [ red, green, blue ] = this.toRGBA()
       return red == 0
           && green == 0
           && blue == 0
@@ -101,7 +89,15 @@ function addMixin( _class, options ) {
       /* istanbul ignore else  */
       if ( !isNaN( a ) ) this[3+RGBA_OFFSET] = a
 
+      this._deriveHueSat()
+
       return this
+    }
+
+    _setRGBUnsafe( r, g, b ) {
+      this[0+RGBA_OFFSET] = r
+      this[1+RGBA_OFFSET] = g
+      this[2+RGBA_OFFSET] = b
     }
 
     setString( str ) {

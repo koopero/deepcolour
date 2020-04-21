@@ -1,11 +1,11 @@
 {
   "name": "deepcolour",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "description": "Parsing, conversion and manipulation of RGBA, CSS and HSV colours, as well as vectors",
   "main": "index.js",
   "scripts": {
     "test": "nyc --reporter=text mocha",
-    "watch": "mocha -wb -R min",
+    "watch": "mocha -w -b -R min",
     "lint": "eslint test src"
   },
   "author": "Samm Zuest Cooper <samm@hfour.ca>",

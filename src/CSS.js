@@ -111,19 +111,20 @@ function addMixin( space ) {
       super.setKeys( ob )
 
       const self = this
-        , props = [
-          ['hex'],
-          ['css']
-        ]
+      const props = [
+        ['hex'],
+        ['css']
+      ]
 
-      props.forEach( function( keys ) {
-        var prop
-        keys.forEach( function ( key ) {
-          prop = prop || key
-          if ( key in ob )
-            self[prop] = ob[key]
+      if ( 'object' == typeof ob && ob )
+        props.forEach( function( keys ) {
+          var prop
+          keys.forEach( function ( key ) {
+            prop = prop || key
+            if ( key in ob )
+              self[prop] = ob[key]
+          } )
         } )
-      } )
 
       return this
     }
