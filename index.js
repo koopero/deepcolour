@@ -1,5 +1,3 @@
-'use strict'
-
 const makeClass = require('./src/space')
 const Colour = 
   makeClass( {

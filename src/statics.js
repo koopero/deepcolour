@@ -20,6 +20,13 @@ function addMixin( space ) {
   space.divide = wrapMathProp('divide')
   space.min = wrapMathProp('min')
   space.max = wrapMathProp('max')
+  space.mix = function( A, B, C ) {
+    A = new space( A )
+    B = new space( B )
+    C = new space( C )
+    A.mix( B, C )
+    return A 
+  }
 
   return space
 }

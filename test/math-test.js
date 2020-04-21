@@ -12,6 +12,13 @@ describe('math', () => {
     })
   })
 
+  describe('init', () => {
+    it('from number', () => {
+      const vec = new Vector( 42 )
+      assert.deepEqual( vec.toArray(), [ 42,42 ] )
+    })
+  })
+
   describe('add', () => {
     it('static call', () => {
       const result = Vector.add( [ 1, 2 ], [ 1 ], [ 0, 2 ] )
@@ -78,6 +85,22 @@ describe('math', () => {
     it('static call', () => {
       const result = Vector.divide( [ 1, 2 ], [ 2, 1 ], [ -1, -1 ] )
       assert.deepEqual( result.toArray(), [ -0.5, -2 ] )
+    })
+  })
+
+  describe('rotate2D', () => {
+    it('will do nothing', () => {
+      const colour = new Vector( [1,0,0] )
+      let A = colour.toArray()
+      colour.rotate2D('xy')
+      let B = colour.toArray()
+      assert.deepEqual( B, A )
+    })
+    it('will rotate', () => {
+      const colour = new Vector( [1,0,0] )
+      colour.rotate2D('xy',60)
+      let result = colour.toArray()
+      assert.approximately( result[0], 0.5,0.00001 )
     })
   })
 })

@@ -82,7 +82,7 @@ function baseClass( options ) {
       return this
     }
 
-    setArguments( args, fill = false ) {
+    setArguments( args, fill = true ) {
       var argChannel = 0
       for ( var argI = 0; argI < args.length; argI++ ) {
         var arg = args[argI]
@@ -298,13 +298,13 @@ function baseClass( options ) {
     //
     // Composite operators
     //
-    mix( b, amount ) {
-      amount = util.parseAmount( amount )
-      b = new (this.space)( b )
-      this.eachChannel( ( value, channel ) =>
-        value * ( 1 - amount ) + b[channel] * amount
-      )
-    }
+    // mix( b, amount ) {
+    //   amount = util.parseAmount( amount )
+    //   b = new (this.space)( b )
+    //   this.eachChannel( ( value, channel ) =>
+    //     value * ( 1 - amount ) + b[channel] * amount
+    //   )
+    // }
 
     add() {
       let b = new (this.space)()
@@ -348,6 +348,64 @@ function baseClass( options ) {
       return this
     }
 
+    mix( B, C ) {
+      B = new( this.space )( B )
+      C = new( this.space )( C )
+      this.eachChannel( ( value, channel ) => (value * (1-C[channel]))+(B*C[channel]) )
+      return this
+    }
+
+    //
+    // Combine-channel vector operations.
+    //
+
+    rotate2D( channels, degrees = 0.0, centre = 0.0 ) {
+      const { PI, sin, cos } = Math
+      let unit = PI / 180
+
+      if ( !channels || channels.length != 2 )
+        throw new Error('Must specify two channels.')
+
+
+      centre = new (this.space)( centre )
+
+      let ix = this.getChannel( channels[0] )
+      let iy = this.getChannel( channels[1] )
+      let cx = centre.getChannel( channels[0] )
+      let cy = centre.getChannel( channels[1] )
+      ix -= cx
+      iy -= cy
+      let ang = degrees * unit
+      let sn = sin( ang )
+      let cs = cos( ang )
+
+      let ox = cs * ix - sn * iy
+      let oy = sn * ix + cs * iy
+      ox += cx
+      oy += cy
+
+      this.setChannel( channels[0], ox )
+      this.setChannel( channels[1], oy )
+
+      return this
+    }
+
+    distance( channels, other = 0.0 ) {
+      channels = channels || options.channels
+      
+      other = new (this.space)( other )
+      let result = 0
+      for ( let index = 0; index < channels.length; index ++ ) {
+        let channel = channels[index]
+        let value = this.getChannel( channel )
+        value -= other.getChannel( channel )
+        value = value * value
+        result += value
+      }
+
+      result = Math.sqrt( result )
+      return result
+    }
   }
 
   Vector.prototype.keys = keys
