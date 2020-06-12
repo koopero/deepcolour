@@ -82,24 +82,27 @@ function baseClass( options ) {
       return this
     }
 
-    setArguments( args, fill = true ) {
+    setArguments( args, fill = null ) {
       var argChannel = 0
       for ( var argI = 0; argI < args.length; argI++ ) {
         var arg = args[argI]
         if ( 'number' == typeof arg ) {
-          this.setChannel( argChannel++, arg )
+          this.setChannelSafe( argChannel++, arg )
         } else if ( 'string' == typeof arg ) {
           this.setString( arg )
-          argChannel = 3
+          argChannel = 4
         } else if ( 'undefined' !== typeof arg ) {
           this.set( arg )
         }
       }
 
-      while( fill && argChannel && argChannel < LENGTH ) {
-        this.setChannel( argChannel, this[argChannel-1] )
-        argChannel ++
-      }
+      if ( fill == true || fill === null )
+        while( argChannel && argChannel < LENGTH ) {
+          if ( fill == true || !this.space.options.defaults[argChannel] ) {
+            this.setChannelSafe( argChannel, this[argChannel-1] )
+          }
+          argChannel ++
+        }
 
       return this
     }
@@ -109,7 +112,7 @@ function baseClass( options ) {
         for ( let key in ob ) {
           let channel = this.channelIndex( key )
           if ( channel != -1 )
-            this.setChannel( channel, ob[key] )
+            this.setChannelSafe( channel, ob[key] )
         }
 
       return this
@@ -131,6 +134,19 @@ function baseClass( options ) {
 
       if ( channel < 0 || channel >= LENGTH )
         throw new Error('Invalid channel')
+
+      value = parseFloat( value )
+      if ( !isNaN( value ) )
+        this[channel] = value
+
+      return this
+    }
+
+    setChannelSafe( channel, value ) {
+      channel = this.channelIndex( channel )
+
+      if ( channel < 0 || channel >= LENGTH )
+        return this 
 
       value = parseFloat( value )
       if ( !isNaN( value ) )
@@ -348,10 +364,12 @@ function baseClass( options ) {
       return this
     }
 
-    mix( B, C ) {
+    mix( B, C = 1.0 ) {
+      let A = this
       B = new( this.space )( B )
       C = new( this.space )( C )
-      this.eachChannel( ( value, channel ) => (value * (1-C[channel]))+(B*C[channel]) )
+      console.log ( { A,B,C } )
+      this.eachChannel( ( value, channel ) => (value * (1-C[channel]))+(B[channel]*C[channel]) )
       return this
     }
 
@@ -406,6 +424,7 @@ function baseClass( options ) {
       result = Math.sqrt( result )
       return result
     }
+
     equal() {
       let b = new (this.space)()
       b.setArguments( arguments, true )

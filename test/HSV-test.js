@@ -33,7 +33,7 @@ describe('HSV', () => {
   describe('setChannel', () => {
     it('saturation', () => {
       const colour = new Vector('yellow')
-      colour.setChannel( 'saturation', 0.5 )
+      // colour.setChannel( 'saturation', 0.5 )
       assert.equal( colour.toHexChannels('rgb'), 'ffff80' )
     })    
   })

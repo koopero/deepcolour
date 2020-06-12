@@ -75,7 +75,9 @@ Set from an array of numbers in the range 0-255. Up to four values will be read,
 
 **setChannel** *( index, Number)* Set the channel `index` to a value.
 
-**setChannelHex** *( index, string )* Set the channel `index` to a hexadecimal value. The string may be 1 or 2 digits.
+**setChannelSafe** *( index, Number)* Set the channel `index` to a value, ignoring invalid channels.
+
+**setChannelHex** *( index, String )* Set the channel `index` to a hexadecimal value. The string may be 1 or 2 digits.
 
 ## Output Methods
 

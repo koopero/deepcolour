@@ -35,6 +35,20 @@ function addMixin( _class ) {
       return this
     }
 
+    setChannelSafe( channel, value ) {
+      let index = this.channelIndex( channel )
+
+      switch( index ) {
+        case -10: this.setHSV( value, NaN, NaN ); break
+        case -11: this.setHSV( NaN, value, NaN ); break
+        case -12: this.setHSV( NaN, NaN, value ); break
+        default:
+          return super.setChannelSafe( channel, value )
+      }
+
+      return this
+    }
+
     getChannel( channel ) {
       let index = this.channelIndex( channel )
 

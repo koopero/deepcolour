@@ -90,7 +90,50 @@ describe('Colour.set', () => {
       colour.setChannel(1, NaN )
       assert.equal( colour.hex, '#ff8000' )
     })
+
+    it('will throw on invalid channel', () => {
+      const colour = new Colour('red')
+      assert.throws( () => colour.setChannel('j', 0.5 ) )
+    })
+
   })
+
+  describe('setChannelSafe', () => {
+    it('will set alpha', () => {
+      const colour = new Colour()
+      colour.setChannelSafe('alpha', 0.5 )
+      assert.equal( colour.alpha, 0.5 )
+    })
+
+    it('will set hue', () => {
+      const colour = new Colour('red')
+      colour.setChannelSafe('hue', 0.5 )
+      assert.equal( colour.hex, '#00ffff' )
+    })
+
+    it('will set channel index', () => {
+      const colour = new Colour('red')
+      colour.setChannelSafe(1, 0.5 )
+      assert.equal( colour.hex, '#ff8000' )
+    })
+
+    it('will ignore NaN', () => {
+      const colour = new Colour('red')
+      colour.setChannelSafe(1, 0.5 )
+      colour.setChannelSafe(1, NaN )
+      assert.equal( colour.hex, '#ff8000' )
+    })
+
+    it('will ignore invalid channel', () => {
+      const colour = new Colour('red')
+      let orig = colour.toString() 
+      colour.setChannelSafe('j', 0.5 )
+      let after = colour.toString()
+      assert.equal( orig, after )
+    })
+  })
+
+
 
   describe('setAlpha', () => {
     it('will set alpha', () => {
@@ -169,6 +212,13 @@ describe('Colour.set', () => {
       const colour = new Colour()
       colour.setKeys( { css: 'rgb(50%,50%,50%)' } )
       assert.equal( colour.hex, '#808080' )
+    })
+
+
+    it('from { invalid }', () => {
+      const colour = new Colour()
+      colour.setKeys( { foo: 0.5 } )
+      assert.equal( colour.hex, '#000000' )
     })
   })
 
