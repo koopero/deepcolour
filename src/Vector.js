@@ -314,13 +314,6 @@ function baseClass( options ) {
     //
     // Composite operators
     //
-    // mix( b, amount ) {
-    //   amount = util.parseAmount( amount )
-    //   b = new (this.space)( b )
-    //   this.eachChannel( ( value, channel ) =>
-    //     value * ( 1 - amount ) + b[channel] * amount
-    //   )
-    // }
 
     add() {
       let b = new (this.space)()
@@ -368,7 +361,6 @@ function baseClass( options ) {
       let A = this
       B = new( this.space )( B )
       C = new( this.space )( C )
-      console.log ( { A,B,C } )
       this.eachChannel( ( value, channel ) => (value * (1-C[channel]))+(B[channel]*C[channel]) )
       return this
     }

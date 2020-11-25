@@ -71,6 +71,13 @@ describe('math', () => {
       vec.mix( [ 3, 4 ] )
       assert.deepEqual( vec.toArray(), [ 3, 4 ] )
     })
+
+    it('static call', () => {
+      const A = new Vector( 0, 1 )
+      const B = new Vector( 2, 3 )
+      let result = Vector.mix( A, B, 0.5 )
+      assert.deepEqual( result.toArray(), [ 1, 2 ] )
+    })
   })
 
 
