@@ -90,7 +90,7 @@ function baseClass( options ) {
           this.setChannelSafe( argChannel++, arg )
         } else if ( 'string' == typeof arg ) {
           this.setString( arg )
-          argChannel = 4
+          // argChannel = 4
         } else if ( 'undefined' !== typeof arg ) {
           this.set( arg )
         }

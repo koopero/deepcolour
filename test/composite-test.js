@@ -26,7 +26,6 @@ describe('composite', ()=> {
       a.add( b )
       // hex will only be RGB
       assert.equal( a.css, c.css )
-
       assert.equal( a.alpha, 1 )
     })
   })
